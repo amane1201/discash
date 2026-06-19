@@ -1,913 +1,2159 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Discord販売を自動化。在庫管理・自動販売・PayPay連携を1つに。次世代Discord自販機BOT">
-  <title>Discash</title>
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="images/logo.png">
-  
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-  
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/animations.css">
-  <link rel="stylesheet" href="css/style.css">
-  
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              cyan: '#00d4ff',
-              purple: '#8b5cf6',
-              dark: '#0a0a0f',
-              card: '#16161f'
-            },
-            discord: {
-              blurple: '#5865F2',
-              dark: '#36393f',
-              darker: '#2f3136',
-              input: '#40444b',
-              text: '#dcddde',
-              muted: '#72767d',
-              embed: '#2f3136'
-            }
-          }
-        }
-      }
-    }
-  </script>
-  
-  <style>
-    /* Discord Chat Specific Styles */
-    .discord-chat {
-      background: #36393f;
-      border-radius: 8px;
-      overflow: hidden;
-      font-family: 'Noto Sans JP', 'Inter', sans-serif;
-    }
-    .discord-message-group {
-      display: flex;
-      gap: 16px;
-      padding: 2px 16px;
-      margin-bottom: 16px;
-    }
-    .discord-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    .discord-content {
-      flex: 1;
-    }
-    .discord-header-line {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      margin-bottom: 4px;
-    }
-    .discord-username {
-      font-weight: 500;
-      font-size: 16px;
-    }
-    .discord-bot-badge {
-      background: #5865F2;
-      color: white;
-      font-size: 0.65rem;
-      font-weight: 600;
-      padding: 2px 4px;
-      border-radius: 3px;
-      text-transform: uppercase;
-    }
-    .discord-timestamp {
-      color: #72767d;
-      font-size: 0.75rem;
-      font-weight: 400;
-    }
-    .discord-text {
-      color: #dcddde;
-      font-size: 1rem;
-      line-height: 1.375;
-    }
-    /* Vending Machine List Style */
-    .discord-embed-container {
-      margin-top: 4px;
-      max-width: 520px;
-    }
-    .vending-list {
-      background: #2f3136;
-      border-left: 4px solid #3ba55d;
-      border-radius: 4px;
-      padding: 12px 16px;
-    }
-    .vending-title {
-      color: #ffffff;
-      font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 16px;
-    }
-    .vending-item {
-      margin-bottom: 12px;
-    }
-    .vending-item:last-child {
-      margin-bottom: 0;
-    }
-    .vending-item-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .vending-number {
-      color: #dcddde;
-      font-size: 0.875rem;
-      font-weight: 500;
-      min-width: 16px;
-    }
-    .vending-name {
-      color: #dcddde;
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
-    .vending-box {
-      background: #40444b;
-      border-radius: 6px;
-      padding: 10px 12px;
-      margin-left: 24px;
-    }
-    .vending-price {
-      color: #ffffff;
-      font-size: 0.9375rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .vending-buttons {
-      display: flex;
-      gap: 8px;
-    }
-    .vending-btn {
-      flex: 1;
-      padding: 6px 12px;
-      border: none;
-      border-radius: 4px;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-    .vending-btn-buy {
-      background: #5865F2;
-      color: white;
-    }
-    .vending-btn-buy:hover {
-      background: #4752C4;
-    }
-    .vending-btn-stock {
-      background: #4f545c;
-      color: #dcddde;
-    }
-    .vending-btn-stock:hover {
-      background: #5d6269;
-    }
-    .discord-input-area {
-      background: #40444b;
-      margin: 0 16px 16px;
-      padding: 12px 16px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .discord-input-text {
-      color: #72767d;
-      font-size: 0.875rem;
-      flex: 1;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discash｜Discord全自動自販機BOT</title>
+<link rel="icon" href="https://i.imgur.com/b8gUPxp.png" type="image/png">
+<link rel="apple-touch-icon" href="https://i.imgur.com/b8gUPxp.png">
+<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=M+PLUS+Rounded+1c:wght@400;700;800;900&family=Mochiy+Pop+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #8a3dff;
+    --purple-deep: #5e1cc4;
+    --purple-light: #b78bff;
+    --pink: #ff5fa8;
+    --pink-mid: #ff8fc7;
+    --pink-light: #ffd6ec;
+    --pink-pale: #fff0f8;
+    --yellow: #ffd84d;
+    --gold: #ffb800;
+    --cream: #fff8fc;
+    --mint: #b8f0d6;
+    --text: #5b4570;
+    --text-dark: #3a2851;
+    --dc-bg: #313338;
+    --dc-bg2: #2b2d31;
+    --dc-bg3: #1e1f22;
+    --dc-embed: #2b2d31;
+    --dc-text: #dbdee1;
+    --dc-muted: #949ba4;
+    --dc-blurple: #5865f2;
+    --dc-green: #23a55a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "M PLUS Rounded 1c", "Kosugi Maru", "Hiragino Maru Gothic ProN", sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(ellipse at top left, #ffe4f3 0%, transparent 50%),
+      radial-gradient(ellipse at top right, #e8d5ff 0%, transparent 50%),
+      radial-gradient(ellipse at bottom, #fff0f8 0%, transparent 60%),
+      var(--cream);
+    background-attachment: fixed;
+    line-height: 1.85;
+    overflow-x: hidden;
+    font-weight: 500;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(rgba(255, 123, 191, 0.35) 2.5px, transparent 2.5px),
+      radial-gradient(rgba(162, 89, 255, 0.22) 2px, transparent 2px);
+    background-size: 60px 60px, 80px 80px;
+    background-position: 0 0, 30px 30px;
+    opacity: 0.6;
+    z-index: -2;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(162, 89, 255, 0.22), transparent 70%);
+    border-radius: 50%;
+    z-index: -1;
+    animation: orbFloat 12s ease-in-out infinite;
+    filter: blur(40px);
+  }
+  @keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-100px, 100px) scale(1.2); }
+  }
+  a { text-decoration: none; color: inherit; }
+  img { display: block; }
+
+  .floaties { position: fixed; inset:0; pointer-events:none; z-index:-1; overflow:hidden; }
+  .floaty-item {
+    position:absolute; opacity: 0.55;
+    animation: rise linear infinite;
+    filter: drop-shadow(0 4px 8px rgba(138,61,255,0.25));
+  }
+  .floaty-item.emoji { font-size: 2rem; }
+  @keyframes rise {
+    0% { transform: translateY(20px) rotate(0deg); opacity:0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(-110vh) rotate(360deg); opacity:0; }
+  }
+
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 20px; position:relative; }
+  section { padding: 90px 0; position:relative; }
+  .section-title {
+    text-align: center;
+    font-family: "Mochiy Pop One", "M PLUS Rounded 1c", sans-serif;
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, var(--purple) 0%, var(--pink) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    filter: drop-shadow(3px 3px 0 #fff) drop-shadow(0 6px 12px rgba(138,61,255,0.15));
+  }
+  .section-title::after {
+    content: "";
+    display: block;
+    width: 80px; height: 6px;
+    background: linear-gradient(90deg, var(--purple-light), var(--pink));
+    border-radius: 10px;
+    margin: 16px auto 0;
+    box-shadow: 0 3px 10px rgba(255, 95, 168, 0.5);
+  }
+  .section-sub {
+    text-align: center;
+    color: var(--pink);
+    font-weight: 800;
+    margin-bottom: 60px;
+    font-size: 0.82rem;
+    letter-spacing: 6px;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 18px 44px;
+    background: linear-gradient(135deg, var(--purple) 0%, var(--purple-light) 50%, var(--pink) 100%);
+    background-size: 200% 200%;
+    color: #fff;
+    font-weight: 800;
+    border-radius: 50px;
+    box-shadow:
+      0 12px 28px rgba(138, 61, 255, 0.4),
+      inset 0 3px 0 rgba(255,255,255,0.4),
+      inset 0 -3px 0 rgba(0,0,0,0.1);
+    transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .3s, background-position .5s;
+    border: 4px solid #fff;
+    cursor: pointer;
+    font-size: 1.05rem;
+    position: relative;
+    overflow: hidden;
+    font-family: inherit;
+    letter-spacing: 1px;
+  }
+  .btn::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    transition: left .6s;
+  }
+  .btn:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow:
+      0 18px 40px rgba(138, 61, 255, 0.5),
+      inset 0 3px 0 rgba(255,255,255,0.4),
+      0 0 50px rgba(255, 95, 168, 0.5);
+    background-position: 100% 100%;
+  }
+  .btn:hover::before { left: 100%; }
+  .btn-pink {
+    background: linear-gradient(135deg, var(--pink) 0%, #ff9ed1 50%, var(--purple-light) 100%);
+    background-size: 200% 200%;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.78);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    z-index: 100;
+    box-shadow:
+      0 4px 20px rgba(138, 61, 255, 0.12),
+      inset 0 -1px 0 rgba(255, 95, 168, 0.2);
+    border-bottom: 2px solid rgba(255,255,255,0.7);
+  }
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; max-width: 1000px; margin: 0 auto;
+  }
+  .nav-logo {
+    display:flex; align-items:center; gap:10px; font-weight:900;
+    font-family: "Mochiy Pop One", sans-serif;
+    font-size:1.55rem;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+  }
+  .nav-logo img {
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 6px 14px rgba(138,61,255,0.35), 0 0 0 3px var(--pink-light);
+    animation: wobble 4s ease-in-out infinite;
+  }
+  @keyframes wobble {
+    0%,100% { transform: rotate(-4deg); }
+    50% { transform: rotate(4deg); }
+  }
+  .nav-links { display:flex; gap: 26px; font-weight:800; font-size:0.92rem; }
+  .nav-links a {
+    position: relative;
+    padding: 4px 2px;
+    transition: color .25s;
+  }
+  .nav-links a::after {
+    content: "";
+    position: absolute;
+    bottom: -2px; left: 0;
+    width: 0; height: 3px;
+    background: linear-gradient(90deg, var(--purple-light), var(--pink));
+    border-radius: 2px;
+    transition: width .3s;
+  }
+  .nav-links a:hover { color: var(--pink); }
+  .nav-links a:hover::after { width: 100%; }
+  @media(max-width: 720px){ .nav-links { display:none; } }
+
+  .hero {
+    text-align: center;
+    padding: 90px 0 130px;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(255, 123, 191, 0.5), transparent 60%),
+      radial-gradient(ellipse at 70% 80%, rgba(162, 89, 255, 0.35), transparent 60%),
+      linear-gradient(180deg, var(--pink-light) 0%, var(--pink-pale) 50%, var(--cream) 100%);
+    border-radius: 0 0 50% 50% / 0 0 70px 70px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cloud {
+    position: absolute;
+    background: rgba(255,255,255,0.85);
+    border-radius: 50%;
+    filter: blur(2px);
+    box-shadow:
+      30px 10px 0 -5px rgba(255,255,255,0.85),
+      60px 0 0 -10px rgba(255,255,255,0.85),
+      -30px 10px 0 -5px rgba(255,255,255,0.85),
+      -55px 5px 0 -8px rgba(255,255,255,0.85);
+    animation: cloudDrift 20s ease-in-out infinite;
+  }
+  .cloud.c1 { top: 60px; left: 8%; width: 60px; height: 30px; }
+  .cloud.c2 { top: 140px; right: 12%; width: 50px; height: 25px; animation-delay: -7s; }
+  .cloud.c3 { bottom: 180px; left: 18%; width: 70px; height: 35px; animation-delay: -14s; }
+  @keyframes cloudDrift {
+    0%,100% { transform: translateX(0); }
+    50% { transform: translateX(30px); }
+  }
+  .hero-deco {
+    position:absolute; font-size:2.8rem; opacity:0.75;
+    animation: floaty 4s ease-in-out infinite;
+    filter: drop-shadow(0 6px 12px rgba(138,61,255,0.3));
+    z-index: 1;
+  }
+  .hero-icon-wrap {
+    position: relative;
+    width: 220px;
+    margin: 0 auto 28px;
+    z-index: 2;
+  }
+  .hero-icon {
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    border: 8px solid #fff;
+    box-shadow:
+      0 22px 50px rgba(138, 61, 255, 0.35),
+      0 0 0 5px var(--pink-light),
+      0 0 0 9px #fff,
+      0 0 0 12px var(--purple-light),
+      0 0 80px rgba(255, 95, 168, 0.5);
+    animation: floaty 3s ease-in-out infinite;
+    background:#fff;
+    object-fit: cover;
+  }
+  .sparkle {
+    position: absolute;
+    color: var(--yellow);
+    font-size: 1.6rem;
+    filter: drop-shadow(0 2px 4px rgba(255,184,0,0.5));
+    animation: sparkle 2s ease-in-out infinite;
+  }
+  .sparkle.s1 { top: -10px; right: -10px; }
+  .sparkle.s2 { bottom: 20px; left: -20px; animation-delay: -0.5s; }
+  .sparkle.s3 { top: 40%; right: -25px; animation-delay: -1s; font-size: 1.2rem; }
+  @keyframes sparkle {
+    0%,100% { transform: scale(1) rotate(0); opacity: 1; }
+    50% { transform: scale(1.4) rotate(180deg); opacity: 0.6; }
+  }
+  @keyframes floaty { 0%,100%{ transform: translateY(0) rotate(0);} 50%{ transform: translateY(-16px) rotate(2deg);} }
+  .hero h1 {
+    font-family: "Mochiy Pop One", sans-serif;
+    font-size: 4rem;
+    background: linear-gradient(135deg, var(--purple) 0%, var(--purple-light) 50%, var(--pink) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    filter: drop-shadow(4px 4px 0 #fff) drop-shadow(6px 6px 0 var(--pink-light)) drop-shadow(0 10px 20px rgba(138,61,255,0.25));
+    position: relative; z-index: 1;
+  }
+  .hero .catch {
+    display: inline-block;
+    font-size: 1.15rem; font-weight:800; color: #fff;
+    margin-bottom: 14px;
+    background: linear-gradient(135deg, var(--pink), var(--pink-mid));
+    padding: 8px 28px;
+    border-radius: 40px;
+    box-shadow: 0 6px 16px rgba(255,95,168,0.4), inset 0 2px 0 rgba(255,255,255,0.3);
+    position: relative; z-index: 1;
+    border: 3px solid #fff;
+  }
+  .hero .catch::before, .hero .catch::after {
+    content: "🎀";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.4rem;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  }
+  .hero .catch::before { left: -18px; }
+  .hero .catch::after { right: -18px; }
+  .hero p.lead {
+    color: var(--text-dark); margin: 18px 0 34px; font-weight:700;
+    position: relative; z-index: 1;
+    font-size: 1.05rem;
+  }
+  .hero-badges { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:38px; position:relative; z-index:1; }
+  .badge {
+    background: linear-gradient(135deg, #fff 0%, #fff8fc 100%);
+    color: var(--purple); font-weight:800; font-size:0.9rem;
+    padding: 10px 22px; border-radius: 50px;
+    box-shadow:
+      0 8px 18px rgba(138, 61, 255, 0.18),
+      inset 0 2px 0 rgba(255,255,255,0.9);
+    border: 3px solid var(--purple-light);
+    transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .badge:hover { transform: translateY(-5px) scale(1.08) rotate(-3deg); }
+  .hero-btns { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; position:relative; z-index:1; }
+
+  .features { display:grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  @media(max-width: 800px){ .features { grid-template-columns: 1fr 1fr; } }
+  @media(max-width: 520px){ .features { grid-template-columns: 1fr; } }
+  .feature-card {
+    background: linear-gradient(145deg, #ffffff 0%, #fff8fc 100%);
+    border-radius: 32px;
+    padding: 38px 26px 30px;
+    text-align:center;
+    box-shadow:
+      0 12px 30px rgba(138, 61, 255, 0.14),
+      0 2px 6px rgba(255, 95, 168, 0.1),
+      inset 0 3px 0 rgba(255,255,255,0.9);
+    border: 3px solid rgba(255, 214, 236, 0.9);
+    transition: transform .35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .35s, border-color .3s;
+    position:relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--purple-light), var(--pink), var(--purple-light));
+    background-size: 200% 100%;
+    opacity: 0;
+    transition: opacity .3s;
+    animation: shimmer 3s linear infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .feature-card::after {
+    content:"🐾"; position:absolute; top:14px; right:18px; font-size:1.3rem; opacity:0.4;
+    transition: transform .4s;
+  }
+  .feature-card:hover {
+    transform: translateY(-12px) rotate(-2deg);
+    border-color: var(--purple-light);
+    box-shadow:
+      0 26px 50px rgba(138, 61, 255, 0.25),
+      0 8px 16px rgba(255, 95, 168, 0.2),
+      inset 0 3px 0 rgba(255,255,255,0.9);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-card:hover::after { transform: rotate(25deg) scale(1.4); }
+  .feature-emoji {
+    font-size: 3.2rem; margin-bottom: 16px;
+    display: inline-block;
+    filter: drop-shadow(0 8px 14px rgba(138,61,255,0.3));
+    transition: transform .4s;
+  }
+  .feature-card:hover .feature-emoji { transform: scale(1.2) rotate(-10deg); }
+  .feature-card h3 {
+    color: var(--purple); margin-bottom: 10px; font-size: 1.22rem;
+    font-weight: 900;
+    font-family: "Mochiy Pop One", sans-serif;
+    letter-spacing: 0.5px;
+  }
+  .feature-card p { font-size: 0.93rem; color: var(--text); font-weight: 500; }
+
+  .steps { display:flex; flex-direction:column; gap: 26px; max-width: 720px; margin: 0 auto; }
+  .step {
+    display:flex; align-items:center; gap: 24px;
+    background: linear-gradient(135deg, #ffffff 0%, #fffafd 100%);
+    border-radius: 32px;
+    padding: 26px 30px;
+    box-shadow:
+      0 14px 30px rgba(138, 61, 255, 0.16),
+      inset 0 3px 0 rgba(255,255,255,0.9);
+    border: 3px solid #fff;
+    border-left: 10px solid var(--pink);
+    position:relative;
+    transition: transform .3s, box-shadow .3s;
+  }
+  .step::before {
+    content: "";
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 50%;
+    background: linear-gradient(90deg, transparent, rgba(255, 214, 236, 0.25));
+    border-radius: 0 28px 28px 0;
+    pointer-events: none;
+  }
+  .step:hover {
+    transform: translateX(10px) scale(1.02);
+    box-shadow:
+      0 18px 40px rgba(138, 61, 255, 0.22),
+      inset 0 3px 0 rgba(255,255,255,0.9);
+  }
+  .step-num {
+    flex-shrink:0; width: 68px; height: 68px; border-radius: 50%;
+    background:
+      radial-gradient(circle at 30% 30%, var(--purple-light), var(--purple) 70%, var(--purple-deep));
+    color:#fff; font-size: 1.8rem; font-weight:900;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:
+      0 10px 22px rgba(138, 61, 255, 0.45),
+      inset 0 3px 5px rgba(255,255,255,0.4),
+      inset 0 -3px 6px rgba(0,0,0,0.2),
+      0 0 0 5px #fff,
+      0 0 0 8px var(--pink-light);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    font-family: "Mochiy Pop One", sans-serif;
+  }
+  .step h3 {
+    color: var(--purple); font-size: 1.18rem; margin-bottom: 4px;
+    font-weight: 900;
+    font-family: "Mochiy Pop One", sans-serif;
+  }
+  .step p { font-size: 0.93rem; font-weight: 500; }
+  .step .step-cat {
+    position:absolute; right:24px; top:50%; transform:translateY(-50%);
+    font-size:2rem; opacity:0.65;
+    filter: drop-shadow(0 4px 8px rgba(138,61,255,0.25));
+  }
+
+  .demo-mascot {
+    position: relative;
+    max-width: 920px;
+    margin: 0 auto -20px;
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 30px;
+    z-index: 5;
+  }
+  .demo-mascot img {
+    width: 90px; height: 90px; border-radius: 50%;
+    border: 5px solid #fff;
+    box-shadow: 0 10px 22px rgba(138,61,255,0.3), 0 0 0 4px var(--pink-light);
+    animation: floaty 3s ease-in-out infinite;
+    background: #fff;
+    object-fit: cover;
+  }
+  .mascot-bubble {
+    position: relative;
+    background: #fff;
+    border: 3px solid var(--pink-mid);
+    border-radius: 22px;
+    padding: 12px 20px;
+    margin-left: 14px;
+    align-self: center;
+    font-weight: 800;
+    color: var(--purple);
+    font-size: 0.92rem;
+    box-shadow: 0 8px 18px rgba(255,95,168,0.25);
+    max-width: 280px;
+  }
+  .mascot-bubble::before, .mascot-bubble::after {
+    content: ""; position: absolute; top: 50%; transform: translateY(-50%);
+    width: 0; height: 0; border-style: solid;
+  }
+  .mascot-bubble::before {
+    left: -16px;
+    border-width: 8px 16px 8px 0;
+    border-color: transparent var(--pink-mid) transparent transparent;
+  }
+  .mascot-bubble::after {
+    left: -12px;
+    border-width: 7px 13px 7px 0;
+    border-color: transparent #fff transparent transparent;
+  }
+  .bubble-mini { font-size: 0.75rem; color: var(--pink); font-weight: 700; }
+  @media(max-width: 600px) {
+    .mascot-bubble { font-size: 0.8rem; padding: 10px 14px; max-width: 200px; }
+    .demo-mascot img { width: 70px; height: 70px; }
+  }
+
+  .dc-app {
+    max-width: 920px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 72px 200px 1fr 200px;
+    background: var(--dc-bg);
+    border-radius: 24px;
+    box-shadow:
+      0 36px 70px rgba(0,0,0,0.45),
+      0 16px 30px rgba(138, 61, 255, 0.3),
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 0 0 6px #fff,
+      0 0 0 9px var(--pink-light),
+      0 0 80px rgba(162, 89, 255, 0.3);
+    overflow: hidden;
+    min-height: 620px;
+    position: relative;
+  }
+  @media(max-width: 880px) {
+    .dc-app { grid-template-columns: 60px 1fr; }
+    .dc-channels, .dc-members { display: none; }
+  }
+
+  .dc-servers {
+    background: #1e1f22;
+    padding: 12px 0;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .dc-server {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: #313338;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 0.9rem;
+    cursor: pointer;
+    transition: border-radius .2s, background .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .dc-server img { width: 100%; height: 100%; object-fit: cover; }
+  .dc-server:hover { border-radius: 16px; background: var(--dc-blurple); }
+  .dc-server.home { background: var(--dc-blurple); border-radius: 16px; }
+  .dc-server.active { border-radius: 16px; box-shadow: 0 0 0 2px #fff inset; }
+  .dc-server.active .pill,
+  .dc-server.home::before {
+    content: "";
+    position: absolute; left: -16px; top: 50%; transform: translateY(-50%);
+    width: 8px; height: 40px; background: #fff; border-radius: 0 4px 4px 0;
+  }
+  .dc-server.faded { background: #313338; color: #b78bff; opacity: 0.85; font-family: "Mochiy Pop One"; }
+  .dc-server.add { background: #313338; color: var(--dc-green); border: 2px dashed var(--dc-green); font-size: 1.4rem; }
+  .dc-server-sep { width: 32px; height: 2px; background: #313338; border-radius: 2px; margin: 2px 0; }
+
+  .dc-channels {
+    background: #2b2d31;
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  .dc-guild-name {
+    padding: 14px 16px;
+    color: #fff; font-weight: 800; font-size: 0.92rem;
+    border-bottom: 1px solid #1e1f22;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.3);
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: "M PLUS Rounded 1c";
+  }
+  .dc-cat {
+    color: #949ba4; font-size: 0.72rem; font-weight: 700;
+    padding: 14px 8px 4px 16px; text-transform: uppercase; letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .dc-ch {
+    color: #949ba4; font-weight: 600; font-size: 0.88rem;
+    padding: 6px 10px 6px 16px; margin: 1px 8px; border-radius: 6px;
+    cursor: pointer; display: flex; align-items: center; gap: 4px;
+    transition: background .15s, color .15s;
+  }
+  .dc-ch:hover { background: #35373c; color: #dbdee1; }
+  .dc-ch.active { background: #404249; color: #fff; }
+  .dc-ch-hash { color: #6d6f78; font-size: 1.1rem; margin-right: 2px; }
+  .dc-ch.active .dc-ch-hash { color: #fff; }
+  .dc-ch-badge {
+    margin-left: auto;
+    background: linear-gradient(135deg, var(--pink), var(--purple-light));
+    color: #fff; font-size: 0.6rem; font-weight: 800;
+    padding: 2px 6px; border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(255, 95, 168, 0.5);
+  }
+
+  .dc-userbar {
+    margin-top: auto;
+    background: #232428;
+    padding: 8px 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dc-userbar img {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px solid var(--dc-green);
+    background: #fff;
+    object-fit: cover;
+  }
+  .dc-userbar-info { flex: 1; min-width: 0; }
+  .dc-userbar-name { color: #fff; font-size: 0.82rem; font-weight: 700; }
+  .dc-userbar-status { color: #949ba4; font-size: 0.66rem; }
+  .dc-userbar-icons { display: flex; gap: 6px; font-size: 0.85rem; opacity: 0.8; }
+
+  .dc-main {
+    display: flex; flex-direction: column;
+    background: var(--dc-bg);
+    min-width: 0;
+  }
+  .dc-header {
+    background: var(--dc-bg);
+    padding: 12px 18px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid #1e1f22;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    color: var(--dc-text); font-weight: 700; font-size: 0.95rem;
+  }
+  .dc-header .hash { color: var(--dc-muted); font-size: 1.4rem; font-weight: 400; }
+  .dc-header-name { color: #fff; }
+  .dc-header-divider { width: 1px; height: 20px; background: #3f4147; margin: 0 6px; }
+  .dc-header-topic { color: var(--dc-muted); font-size: 0.82rem; font-weight: 500; }
+  .dc-header .dot { margin-left: auto; display: flex; gap: 14px; font-size: 1rem; opacity: 0.8; }
+
+  .dc-chat {
+    flex: 1;
+    padding: 16px 18px;
+    overflow-y: auto;
+    max-height: 480px;
+  }
+  .dc-datesep {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--dc-muted); font-size: 0.72rem; font-weight: 700;
+    margin: 8px 0 16px;
+  }
+  .dc-datesep::before, .dc-datesep::after {
+    content: ""; flex: 1; height: 1px; background: #3f4147;
+  }
+
+  .dc-message { display:flex; gap:14px; margin-bottom: 14px; }
+  .dc-avatar {
+    width: 44px; height: 44px; border-radius: 50%; flex-shrink:0;
+    border: 2px solid var(--purple-light);
+    background:#fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4), 0 0 0 2px rgba(162,89,255,0.3);
+    object-fit: cover;
+  }
+  .dc-body { flex:1; min-width:0; }
+  .dc-author { display:flex; align-items:center; gap:8px; margin-bottom: 4px; }
+  .dc-name { color:#fff; font-weight:700; font-size:0.95rem; }
+  .dc-tag {
+    background: linear-gradient(135deg, var(--dc-blurple), #4752c4);
+    color:#fff; font-size:0.62rem; font-weight:700;
+    padding: 2px 7px; border-radius: 4px; display:inline-flex; align-items:center; gap:3px;
+    box-shadow: 0 2px 4px rgba(88, 101, 242, 0.4);
+  }
+  .dc-time { color: var(--dc-muted); font-size:0.72rem; }
+  .dc-embed {
+    background: linear-gradient(135deg, var(--dc-embed) 0%, #25272b 100%);
+    border-left: 5px solid var(--purple-light);
+    border-radius: 8px;
+    padding: 16px 18px;
+    max-width: 460px;
+    position: relative;
+    box-shadow:
+      0 4px 12px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .shop-embed { max-width: 520px; }
+  .dc-embed-title {
+    color: #fff; font-weight:800; font-size:1.08rem; margin-bottom:6px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .dc-embed-desc { color: var(--dc-text); font-size:0.86rem; margin-bottom: 14px; }
+  .dc-embed-thumb {
+    position:absolute; top:16px; right:18px; width:46px; height:46px;
+    border-radius:50%; border:2px solid var(--purple-light);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    object-fit: cover;
+  }
+  .dc-fieldrow {
+    display: flex; gap: 14px; margin-bottom: 12px; flex-wrap: wrap;
+  }
+  .dc-field { flex: 1; min-width: 80px; }
+  .dc-field-name { color: var(--dc-muted); font-size: 0.7rem; font-weight: 700; margin-bottom: 2px; }
+  .dc-field-val { color: #fff; font-weight: 700; font-size: 0.85rem; }
+
+  .dc-products { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+  .dc-product {
+    background: linear-gradient(145deg, #3a3c42 0%, #2c2e33 100%);
+    border:2px solid transparent;
+    border-radius:10px;
+    padding: 12px;
+    cursor:pointer;
+    transition: transform .15s, border-color .15s, box-shadow .15s;
+    box-shadow:
+      0 2px 6px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+    position: relative;
+  }
+  .dc-product:hover {
+    transform: translateY(-3px);
+    border-color: var(--dc-muted);
+    box-shadow:
+      0 6px 14px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  .dc-product.selected {
+    border-color: var(--yellow);
+    box-shadow:
+      0 6px 16px rgba(255, 216, 77, 0.4),
+      0 0 0 1px var(--yellow),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .dc-product.soldout { opacity:0.4; cursor:not-allowed; filter: grayscale(0.5); }
+  .dc-product .pn { color:#fff; font-weight:700; font-size:0.88rem; }
+  .dc-product .pp {
+    color: var(--yellow); font-weight:800; font-size:0.95rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .dc-product .ps { color: var(--dc-muted); font-size:0.72rem; }
+  .dc-embed-footer {
+    display:flex; align-items:center; gap:6px; color: var(--dc-muted);
+    font-size:0.72rem; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px; margin-top:6px;
+  }
+  .dc-embed-footer img { width:16px; height:16px; border-radius:50%; }
+  .dc-buttons { display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .dc-btn {
+    border:none; border-radius:6px; padding:10px 18px; font-weight:700;
+    font-size:0.86rem; cursor:pointer; color:#fff; transition: filter .15s, transform .15s, box-shadow .15s;
+    font-family: inherit; display:inline-flex; align-items:center; gap:5px;
+    box-shadow:
+      0 3px 6px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.2),
+      inset 0 -1px 0 rgba(0,0,0,0.2);
+  }
+  .dc-btn:hover {
+    filter: brightness(1.15);
+    transform: translateY(-2px);
+    box-shadow:
+      0 6px 14px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.25),
+      inset 0 -1px 0 rgba(0,0,0,0.2);
+  }
+  .dc-btn:disabled { opacity:0.5; cursor:not-allowed; transform: none; }
+  .dc-btn.blurple { background: linear-gradient(180deg, #5865f2 0%, #4752c4 100%); }
+  .dc-btn.green { background: linear-gradient(180deg, #23a55a 0%, #1a8045 100%); }
+  .dc-btn.gray { background: linear-gradient(180deg, #4e5058 0%, #3a3c42 100%); }
+  .dc-reply { margin-top: 8px; }
+  .dc-reply .dc-embed { border-left-color: var(--dc-green); }
+  .dc-log-line {
+    color: var(--dc-text); font-size:0.88rem; padding: 6px 0;
+    display:flex; gap:8px; align-items:flex-start;
+    animation: pop .35s ease;
+  }
+  @keyframes pop { from{ opacity:0; transform: translateY(8px);} to{ opacity:1; transform:none; } }
+  .dc-log-line b { color: var(--yellow); text-shadow: 0 1px 2px rgba(255,216,77,0.3); }
+
+  .dc-reactions {
+    display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;
+  }
+  .dc-reaction {
+    background: #2b2d31;
+    border: 1px solid #3f4147;
+    border-radius: 10px;
+    padding: 3px 8px;
+    color: var(--dc-text); font-size: 0.78rem; font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+    cursor: pointer; transition: all .15s;
+  }
+  .dc-reaction:hover { background: #35373c; border-color: var(--dc-muted); }
+  .dc-reaction.me {
+    background: rgba(88, 101, 242, 0.15);
+    border-color: var(--dc-blurple);
+    color: #c9cdfb;
+  }
+  .dc-reaction.add { font-size: 0.95rem; color: var(--dc-muted); padding: 1px 8px; }
+
+  .dc-inputbar {
+    background: #383a40;
+    margin: 0 16px 16px;
+    border-radius: 10px;
+    padding: 11px 14px;
+    display: flex; align-items: center; gap: 10px;
+    color: var(--dc-muted); font-size: 0.88rem;
+  }
+  .dc-input-plus {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--dc-muted); color: #383a40;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.1rem;
+    cursor: pointer;
+  }
+  .dc-input-text { flex: 1; }
+  .dc-input-icons { font-size: 0.95rem; letter-spacing: 6px; opacity: 0.6; }
+
+  .dc-members {
+    background: #2b2d31;
+    padding: 12px 8px;
+    overflow-y: auto;
+  }
+  .dc-members-title {
+    color: var(--dc-muted);
+    font-size: 0.7rem; font-weight: 800;
+    padding: 12px 8px 4px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .dc-member {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 8px; border-radius: 6px;
+    cursor: pointer; transition: background .15s;
+    margin-bottom: 2px;
+    position: relative;
+  }
+  .dc-member:hover { background: #35373c; }
+  .dc-member img, .dc-avatar-fallback {
+    width: 32px; height: 32px; border-radius: 50%;
+    object-fit: cover; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .dc-member.off { opacity: 0.5; }
+  .dc-member-name {
+    color: #fff; font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .dc-tag.mini { font-size: 0.55rem; padding: 1px 4px; }
+  .dc-member-status { color: var(--dc-muted); font-size: 0.7rem; }
+  .dc-member.bot .dc-member-name { color: #c9cdfb; }
+  .dc-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    position: absolute; left: 32px; bottom: 8px;
+    border: 2px solid #2b2d31;
+  }
+  .dc-dot.online { background: var(--dc-green); }
+  .dc-dot.offline { background: #80848e; }
+
+  .pp-modal {
+    position: fixed; inset: 0;
+    background: rgba(50, 20, 80, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 1000;
+    animation: ppFade .25s ease;
+    padding: 20px;
+  }
+  .pp-modal.show { display: flex; }
+  @keyframes ppFade { from{opacity:0;} to{opacity:1;} }
+  .pp-card {
+    background: linear-gradient(160deg, #fff 0%, #fff0f8 100%);
+    border-radius: 28px;
+    padding: 28px 30px 24px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow:
+      0 30px 60px rgba(0,0,0,0.35),
+      0 0 0 5px #fff,
+      0 0 0 8px var(--pink-light),
+      0 0 60px rgba(255, 95, 168, 0.4);
+    text-align: center;
+    position: relative;
+    animation: ppPop .35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes ppPop {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .pp-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 32px; height: 32px; border-radius: 50%;
+    border: none; background: #fff;
+    color: var(--purple); font-weight: 800; font-size: 0.9rem;
+    cursor: pointer; box-shadow: 0 4px 10px rgba(138,61,255,0.2);
+  }
+  .pp-bot-head {
+    display:flex; align-items:center; gap:10px; justify-content:center;
+    margin-bottom: 12px;
+  }
+  .pp-bot-head img {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 10px rgba(138,61,255,0.3), 0 0 0 2px var(--pink-mid);
+    object-fit: cover; background:#fff;
+  }
+  .pp-bot-head-text {
+    text-align: left;
+  }
+  .pp-bot-head-text .n { color: var(--purple); font-weight: 900; font-size: 0.95rem; font-family:"Mochiy Pop One"; }
+  .pp-bot-head-text .s { color: var(--pink); font-size: 0.72rem; font-weight: 700; }
+  .pp-amount {
+    font-size: 2.4rem; font-weight: 900;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: "Mochiy Pop One";
+    margin-bottom: 2px;
+    line-height: 1.1;
+  }
+  .pp-desc {
+    color: var(--text); font-weight: 700; font-size: 0.85rem;
+    margin-bottom: 18px;
+  }
+  .pp-input-label {
+    display:flex; align-items:center; justify-content:space-between;
+    color: var(--purple); font-weight: 800; font-size: 0.78rem;
+    margin-bottom: 6px;
+    font-family: "Mochiy Pop One";
+  }
+  .pp-input-label .req { color: var(--pink); }
+  .pp-input-wrap {
+    position: relative;
+    margin-bottom: 14px;
+  }
+  .pp-input {
+    width: 100%;
+    padding: 13px 14px 13px 40px;
+    border: 2.5px solid var(--pink-light);
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: var(--text-dark);
+    background: #fff;
+    font-weight: 600;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    box-shadow: inset 0 2px 4px rgba(138,61,255,0.05);
+  }
+  .pp-input:focus {
+    border-color: var(--purple-light);
+    box-shadow: 0 0 0 4px rgba(183,139,255,0.2), inset 0 2px 4px rgba(138,61,255,0.05);
+  }
+  .pp-input-icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 1rem;
+  }
+  .pp-cat-side {
+    position: absolute;
+    right: -10px; top: -40px;
+    width: 64px; height: 64px;
+  }
+  .pp-cat-side img {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 8px 16px rgba(138,61,255,0.3), 0 0 0 2px var(--pink-mid);
+    background: #fff;
+    object-fit: cover;
+    animation: floaty 2.5s ease-in-out infinite;
+  }
+  .pp-cat-bubble {
+    position: absolute;
+    right: 72px; top: 10px;
+    background: #fff;
+    border: 2px solid var(--pink-mid);
+    border-radius: 14px;
+    padding: 6px 10px;
+    color: var(--purple); font-size: 0.72rem; font-weight: 800;
+    white-space: nowrap;
+    box-shadow: 0 6px 14px rgba(255,95,168,0.25);
+  }
+  .pp-cat-bubble::after {
+    content: ""; position: absolute;
+    right: -10px; top: 50%; transform: translateY(-50%);
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 6px 0 6px 10px;
+    border-color: transparent transparent transparent var(--pink-mid);
+  }
+  @media(max-width: 480px) {
+    .pp-cat-side, .pp-cat-bubble { display: none; }
+  }
+  .pp-pay-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #ff0033 0%, #ff5fa8 100%);
+    color: #fff; font-weight: 900; font-size: 1.05rem;
+    border: none; border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(255,0,51,0.35), inset 0 2px 0 rgba(255,255,255,0.3);
+    font-family: inherit;
+    transition: transform .2s, box-shadow .2s;
+    margin-top: 4px;
+  }
+  .pp-pay-btn:hover { transform: translateY(-3px); box-shadow: 0 14px 28px rgba(255,0,51,0.45); }
+  .pp-pay-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .pp-note { color: #aaa; font-size: 0.7rem; margin-top: 10px; }
+
+  .dm-panel {
+    max-width: 920px;
+    margin: 30px auto 0;
+    background: linear-gradient(160deg, #fff 0%, #fff5fa 100%);
+    border-radius: 28px;
+    box-shadow:
+      0 18px 40px rgba(138,61,255,0.18),
+      inset 0 3px 0 rgba(255,255,255,0.9);
+    border: 3px solid var(--pink-light);
+    overflow: hidden;
+    position: relative;
+  }
+  .dm-header {
+    padding: 14px 22px;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: #fff;
+    display: flex; align-items: center; gap: 12px;
+    font-family: "Mochiy Pop One";
+    font-weight: 700;
+    position: relative;
+  }
+  .dm-header img {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    object-fit: cover; background: #fff;
+  }
+  .dm-header-text { flex: 1; }
+  .dm-header-title { font-size: 1rem; }
+  .dm-header-sub { font-size: 0.72rem; opacity: 0.9; font-weight: 600; font-family: "M PLUS Rounded 1c"; }
+  .dm-header-badge {
+    background: #fff;
+    color: var(--pink);
+    font-size: 0.75rem; font-weight: 900;
+    padding: 4px 10px;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+  .dm-body {
+    padding: 24px 22px;
+    min-height: 120px;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255,214,236,0.4), transparent 60%),
+      radial-gradient(circle at 80% 70%, rgba(183,139,255,0.2), transparent 60%);
+  }
+  .dm-empty {
+    text-align: center;
+    color: var(--text);
+    font-weight: 600;
+    padding: 30px 0;
+    opacity: 0.65;
+  }
+  .dm-empty .dm-cat {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+    display: block;
+    filter: drop-shadow(0 4px 8px rgba(138,61,255,0.2));
+    animation: floaty 3s ease-in-out infinite;
+  }
+  .dm-msg {
+    background: #fff;
+    border-radius: 20px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    box-shadow: 0 8px 20px rgba(138,61,255,0.15);
+    border: 2px solid var(--pink-light);
+    display: flex; gap: 14px;
+    animation: dmIn .5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+  }
+  @keyframes dmIn {
+    from { transform: translateY(20px) scale(0.95); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+  .dm-msg img {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 2px solid var(--purple-light);
+    box-shadow: 0 4px 10px rgba(138,61,255,0.2);
+    object-fit: cover; background:#fff;
+    flex-shrink: 0;
+  }
+  .dm-msg-body { flex: 1; min-width: 0; }
+  .dm-msg-author {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+  }
+  .dm-msg-name { color: var(--purple); font-weight: 900; font-size: 0.95rem; font-family:"Mochiy Pop One"; }
+  .dm-msg-tag {
+    background: linear-gradient(135deg, var(--dc-blurple), #4752c4);
+    color:#fff; font-size:0.6rem; font-weight:700;
+    padding: 2px 7px; border-radius: 4px;
+  }
+  .dm-msg-time { color: var(--pink); font-size: 0.72rem; font-weight: 700; }
+  .dm-msg-content { color: var(--text-dark); font-size: 0.92rem; font-weight: 600; }
+  .dm-msg-content b { color: var(--pink); }
+  .dm-msg-embed {
+    margin-top: 10px;
+    background: linear-gradient(135deg, #fff8fc, #fff0f8);
+    border-left: 5px solid var(--purple-light);
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: inset 0 2px 4px rgba(138,61,255,0.05);
+  }
+  .dm-msg-embed-title {
+    color: var(--purple); font-weight: 900; font-size: 0.95rem;
+    margin-bottom: 6px;
+    font-family: "Mochiy Pop One";
+  }
+  .dm-msg-embed-field {
+    display: flex; gap: 8px;
+    margin-top: 6px; font-size: 0.85rem;
+    color: var(--text-dark); font-weight: 700;
+  }
+  .dm-msg-embed-field .k { color: var(--pink); min-width: 70px; }
+  .dm-code {
+    display: inline-block;
+    background: linear-gradient(135deg, #2b2d31, #1e1f22);
+    color: var(--yellow);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-family: "Courier New", monospace;
+    font-weight: 900;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    margin-top: 6px;
+  }
+  .dm-msg-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff0033, #ff5fa8);
+    color: #fff !important;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.8rem;
+    margin-top: 6px;
+    box-shadow: 0 4px 10px rgba(255,0,51,0.3);
+    text-decoration: none;
+  }
+  .dm-new-badge {
+    position: absolute;
+    top: -8px; right: 16px;
+    background: linear-gradient(135deg, var(--yellow), var(--gold));
+    color: var(--text-dark);
+    font-size: 0.65rem; font-weight: 900;
+    padding: 3px 10px; border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(255,184,0,0.4);
+    animation: newPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes newPulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  .success-splash {
+    position: fixed;
+    left: 50%; bottom: 40px;
+    transform: translateX(-50%) translateY(200%);
+    background: linear-gradient(135deg, #fff 0%, #fff0f8 100%);
+    border-radius: 60px;
+    padding: 14px 24px 14px 90px;
+    box-shadow:
+      0 20px 40px rgba(138,61,255,0.35),
+      0 0 0 4px #fff,
+      0 0 0 7px var(--pink-light),
+      0 0 50px rgba(255, 95, 168, 0.4);
+    z-index: 1100;
+    transition: transform .5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-family: "Mochiy Pop One";
+    color: var(--purple);
+    font-weight: 800;
+    min-width: 240px;
+  }
+  .success-splash.show { transform: translateX(-50%) translateY(0); }
+  .success-splash img {
+    position: absolute;
+    left: -10px; top: 50%;
+    width: 80px; height: 80px; border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 8px 18px rgba(138,61,255,0.3), 0 0 0 3px var(--pink-mid);
+    background: #fff;
+    object-fit: cover;
+    animation: catBounce 0.6s ease infinite alternate;
+  }
+  @keyframes catBounce {
+    from { transform: translateY(-50%) rotate(-6deg); }
+    to { transform: translateY(-58%) rotate(6deg); }
+  }
+  .success-bubble { font-size: 1rem; line-height: 1.4; }
+  .success-bubble small { font-size: 0.78rem; color: var(--pink); font-weight: 700; }
+
+  .demo-note {
+    text-align:center;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight:900; font-size:0.95rem; margin-top:30px;
+    font-family: "Mochiy Pop One", sans-serif;
+  }
+
+  .price-wrap { max-width: 460px; margin: 0 auto; }
+  .price-card {
+    background: linear-gradient(145deg, #ffffff 0%, #fff8fc 100%);
+    border-radius:32px; padding: 44px 36px; text-align:center;
+    box-shadow:
+      0 18px 44px rgba(138, 61, 255, 0.22),
+      inset 0 3px 0 rgba(255,255,255,0.9);
+    border:3px solid var(--purple-light);
+    position:relative;
+    transition: transform .35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .35s;
+  }
+  .price-card:hover {
+    transform: translateY(-10px) rotate(-1deg);
+    box-shadow:
+      0 24px 54px rgba(138, 61, 255, 0.3),
+      inset 0 3px 0 rgba(255,255,255,0.9);
+  }
+  .price-card .corner-cat {
+    position:absolute; top:-22px; right:18px; font-size:2.4rem;
+    filter: drop-shadow(0 6px 12px rgba(138,61,255,0.3));
+    animation: floaty 3s ease-in-out infinite;
+  }
+  .price-card::before {
+    content:"💖 おすすめ 💖"; position:absolute; top:-18px; left:50%; transform:translateX(-50%);
+    background: linear-gradient(135deg, var(--pink), var(--purple-light));
+    color:#fff; font-weight:900; font-size:0.8rem;
+    padding:8px 22px; border-radius:50px;
+    box-shadow: 0 8px 18px rgba(255, 95, 168, 0.45);
+    letter-spacing: 1px;
+    border: 3px solid #fff;
+    font-family: "Mochiy Pop One", sans-serif;
+  }
+  .price-card h3 {
+    color: var(--purple); font-size:1.6rem; margin-bottom: 8px; font-weight: 900;
+    font-family: "Mochiy Pop One", sans-serif;
+  }
+  .price-card .price {
+    font-size:2.8rem; font-weight:900;
+    background: linear-gradient(135deg, var(--pink), var(--purple-light));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 8px rgba(255, 95, 168, 0.2));
+    font-family: "Mochiy Pop One", sans-serif;
+  }
+  .price-card .price small { font-size:0.95rem; color:#aaa; font-weight:600; -webkit-text-fill-color: #aaa; }
+  .price-card ul { list-style:none; text-align:left; font-size:0.95rem; }
+  .price-card li {
+    padding:10px 0;
+    border-bottom: 1px dashed rgba(255, 123, 191, 0.25);
+    font-weight: 600;
+  }
+  .price-card li:last-child { border-bottom: none; }
+  .price-card li::before { content:"🐾 "; }
+  .terms {
+    background: linear-gradient(145deg, #ffffff 0%, #fffafd 100%);
+    border-radius:32px; padding: 36px; margin-top: 36px;
+    box-shadow:
+      0 14px 34px rgba(138, 61, 255, 0.14),
+      inset 0 3px 0 rgba(255,255,255,0.9);
+    border:3px solid rgba(255, 214, 236, 0.9); font-size:0.88rem;
+  }
+  .terms h3 {
+    color: var(--purple); margin-bottom: 16px; font-weight: 900;
+    font-size: 1.2rem;
+    display: flex; align-items: center; gap: 8px;
+    font-family: "Mochiy Pop One", sans-serif;
+  }
+  .terms h3::before {
+    content: "📜"; font-size: 1.4rem;
+  }
+  .terms ol { padding-left: 1.4em; }
+  .terms li { padding: 5px 0; font-weight: 500; }
+
+  .faq-list { max-width: 780px; margin: 0 auto; }
+  .faq-item {
+    background: linear-gradient(145deg, #ffffff 0%, #fffafd 100%);
+    border-radius: 24px; margin-bottom: 16px;
+    box-shadow:
+      0 10px 22px rgba(138, 61, 255, 0.13),
+      inset 0 3px 0 rgba(255,255,255,0.9);
+    overflow:hidden;
+    border:3px solid rgba(255, 214, 236, 0.9);
+    transition: border-color .3s, box-shadow .3s, transform .3s;
+  }
+  .faq-item:hover {
+    border-color: var(--purple-light);
+    transform: translateY(-3px);
+    box-shadow:
+      0 14px 30px rgba(138, 61, 255, 0.2),
+      inset 0 3px 0 rgba(255,255,255,0.9);
+  }
+  .faq-item.open {
+    border-color: var(--purple-light);
+    box-shadow:
+      0 14px 30px rgba(138, 61, 255, 0.22),
+      inset 0 3px 0 rgba(255,255,255,0.9);
+  }
+  .faq-q {
+    padding: 20px 26px; font-weight:900; color: var(--purple); cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    font-size: 1rem;
+    font-family: "Mochiy Pop One", sans-serif;
+  }
+  .faq-q::before { content:"🐱 "; }
+  .faq-arrow {
+    transition: transform .3s; font-size:1.4rem; color:var(--pink); margin-left:auto;
+    filter: drop-shadow(0 2px 4px rgba(255,95,168,0.3));
+  }
+  .faq-item.open .faq-arrow { transform: rotate(180deg); }
+  .faq-a {
+    max-height: 0; overflow:hidden; transition: max-height .35s ease, padding .35s;
+    padding: 0 26px; font-size:0.92rem;
+  }
+  .faq-item.open .faq-a { max-height: 300px; padding: 0 26px 20px; }
+  .faq-a::before { content:"A. "; color: var(--purple); font-weight:900; }
+
+  .cta {
+    text-align:center;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.25), transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(255, 216, 77, 0.18), transparent 50%),
+      linear-gradient(135deg, var(--purple-deep) 0%, var(--purple) 40%, var(--pink) 100%);
+    color:#fff; border-radius: 48px; margin: 0 20px; padding: 80px 20px;
+    box-shadow:
+      0 28px 60px rgba(138, 61, 255, 0.45),
+      0 0 100px rgba(255, 95, 168, 0.35),
+      inset 0 3px 0 rgba(255,255,255,0.25);
+    position:relative; overflow:hidden;
+    border: 5px solid rgba(255,255,255,0.5);
+  }
+  .cta::before {
+    content: "";
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background:
+      radial-gradient(circle, rgba(255,255,255,0.12) 1.5px, transparent 1.5px);
+    background-size: 30px 30px;
+    animation: ctaShift 20s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes ctaShift {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(30px, 30px); }
+  }
+  .cta h2 {
+    font-size: 2.6rem; margin-bottom: 14px; font-weight: 900;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.25), 3px 3px 0 rgba(255,255,255,0.15);
+    position: relative; z-index: 1;
+    font-family: "Mochiy Pop One", sans-serif;
+    letter-spacing: 2px;
+  }
+  .cta p {
+    margin-bottom: 30px; font-weight:700;
+    position: relative; z-index: 1;
+    font-size: 1.08rem;
+  }
+  .cta .btn {
+    background: linear-gradient(135deg, #fff 0%, #fffafd 100%);
+    color: var(--purple);
+    box-shadow:
+      0 14px 30px rgba(0,0,0,0.28),
+      inset 0 3px 0 rgba(255,255,255,0.9);
+    position: relative; z-index: 1;
+  }
+  .cta .btn:hover {
+    background: linear-gradient(135deg, #fff 0%, #fff0f8 100%);
+    box-shadow:
+      0 20px 38px rgba(0,0,0,0.32),
+      0 0 50px rgba(255, 216, 77, 0.6),
+      inset 0 3px 0 rgba(255,255,255,0.9);
+  }
+  .cta .cta-cat {
+    position:absolute; font-size:2.8rem; opacity:0.7;
+    animation: floaty 3.5s ease-in-out infinite;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,0.25));
+  }
+  footer {
+    text-align:center; padding: 50px 20px; color: var(--text); font-size:0.88rem;
+    position: relative;
+  }
+  footer .nav-logo { justify-content:center; margin-bottom: 12px; }
+
+  .yen-bill {
+    display: inline-block;
+    width: 70px;
+    filter: drop-shadow(0 8px 14px rgba(0,0,0,0.25));
+  }
+</style>
 </head>
-<body class="bg-brand-dark text-white overflow-x-hidden">
-  
-  <!-- Background Effects -->
-  <div class="bg-grid"></div>
-  <div class="bg-noise"></div>
-  <div class="bg-glow"></div>
-  <div class="particles-container" id="particles"></div>
-  
-  <!-- Scroll Progress -->
-  <div class="scroll-progress" id="scrollProgress"></div>
-  
-  <!-- Navigation with Logo Icon -->
-  <nav class="navbar" id="navbar">
-    <div class="navbar-container">
-      <a href="#" class="navbar-brand">
-        <img src="images/logo.png" alt="Discash" style="width: 36px; height: 36px; border-radius: 8px;">
-        <span>Discash</span>
-      </a>
-      
-      <div class="navbar-nav">
-        <a href="#features" class="navbar-link">機能</a>
-        <a href="#pricing" class="navbar-link">料金</a>
-        <a href="#faq" class="navbar-link">FAQ</a>
-        <a href="#contact" class="navbar-link">お問い合わせ</a>
-      </div>
-      
-      <a href="#pricing" class="navbar-cta">
-        <i class="fab fa-discord mr-2"></i>導入する
-      </a>
-      
-      <button class="navbar-mobile-toggle" id="mobileToggle">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+<body>
+
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <symbol id="bill" viewBox="0 0 160 80">
+      <defs>
+        <linearGradient id="billBg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f5e8d0"/>
+          <stop offset="40%" stop-color="#e8d4a8"/>
+          <stop offset="100%" stop-color="#d4b87a"/>
+        </linearGradient>
+        <linearGradient id="billStripe" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#a87a3a"/>
+          <stop offset="100%" stop-color="#6b4a1f"/>
+        </linearGradient>
+      </defs>
+      <rect x="2" y="2" width="156" height="76" rx="4" fill="url(#billBg)" stroke="#8a6a3a" stroke-width="0.5"/>
+      <ellipse cx="40" cy="40" rx="22" ry="26" fill="#c9a872" opacity="0.6" stroke="#8a6a3a" stroke-width="0.6"/>
+      <ellipse cx="40" cy="34" rx="9" ry="11" fill="#9c7a48" opacity="0.7"/>
+      <rect x="28" y="44" width="24" height="18" rx="3" fill="#9c7a48" opacity="0.6"/>
+      <text x="120" y="24" font-family="serif" font-size="14" font-weight="bold" fill="#5a3a1a">10000</text>
+      <text x="80" y="46" font-family="serif" font-size="9" font-weight="bold" fill="#5a3a1a" text-anchor="middle">日本銀行券</text>
+      <text x="80" y="58" font-family="serif" font-size="13" font-weight="900" fill="#5a3a1a" text-anchor="middle">壱万円</text>
+      <text x="10" y="14" font-family="serif" font-size="6" font-weight="bold" fill="#5a3a1a">NIPPON GINKO</text>
+      <text x="148" y="74" font-family="serif" font-size="10" font-weight="bold" fill="#5a3a1a" text-anchor="end">10000</text>
+      <rect x="68" y="6" width="3" height="68" fill="url(#billStripe)" opacity="0.5"/>
+      <circle cx="120" cy="55" r="10" fill="none" stroke="#8a6a3a" stroke-width="0.4" opacity="0.6"/>
+      <circle cx="120" cy="55" r="6" fill="none" stroke="#8a6a3a" stroke-width="0.4" opacity="0.6"/>
+      <circle cx="120" cy="55" r="3" fill="#8a6a3a" opacity="0.3"/>
+      <rect x="4" y="4" width="152" height="72" rx="3" fill="none" stroke="#8a6a3a" stroke-width="0.6" opacity="0.7"/>
+      <rect x="7" y="7" width="146" height="66" rx="2" fill="none" stroke="#8a6a3a" stroke-width="0.3" opacity="0.5"/>
+    </symbol>
+
+    <symbol id="bundle" viewBox="0 0 180 110">
+      <defs>
+        <linearGradient id="bandShine" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fff" stop-opacity="0.5"/>
+          <stop offset="50%" stop-color="#fff" stop-opacity="0"/>
+          <stop offset="100%" stop-color="#000" stop-opacity="0.3"/>
+        </linearGradient>
+      </defs>
+      <g transform="translate(8, 22) rotate(-3)">
+        <use href="#bill" x="0" y="0" width="160" height="80"/>
+      </g>
+      <g transform="translate(4, 18) rotate(2)">
+        <use href="#bill" x="0" y="0" width="160" height="80"/>
+      </g>
+      <g transform="translate(10, 14)">
+        <use href="#bill" x="0" y="0" width="160" height="80"/>
+      </g>
+      <rect x="40" y="32" width="100" height="22" fill="#d62a3a" stroke="#8a1a25" stroke-width="0.5" rx="1"/>
+      <rect x="40" y="32" width="100" height="22" fill="url(#bandShine)" opacity="0.4"/>
+      <text x="90" y="48" font-family="serif" font-size="11" font-weight="900" fill="#fff" text-anchor="middle">¥1,000,000</text>
+    </symbol>
+
+    <symbol id="coin" viewBox="0 0 60 60">
+      <defs>
+        <radialGradient id="coinGrad" cx="0.35" cy="0.35" r="0.7">
+          <stop offset="0%" stop-color="#ffe88a"/>
+          <stop offset="50%" stop-color="#ffc83d"/>
+          <stop offset="100%" stop-color="#b8800a"/>
+        </radialGradient>
+      </defs>
+      <circle cx="30" cy="30" r="26" fill="url(#coinGrad)" stroke="#8a5a0a" stroke-width="1"/>
+      <circle cx="30" cy="30" r="22" fill="none" stroke="#8a5a0a" stroke-width="0.8" opacity="0.6"/>
+      <text x="30" y="38" font-family="serif" font-size="22" font-weight="900" fill="#8a5a0a" text-anchor="middle">¥</text>
+      <ellipse cx="22" cy="20" rx="8" ry="4" fill="#fff" opacity="0.5"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="floaties" id="floaties"></div>
+
+<header>
+  <nav class="nav">
+    <a href="#top" class="nav-logo">
+      <img src="https://i.imgur.com/b8gUPxp.png" alt="Discash">
+      Discash
+    </a>
+    <div class="nav-links">
+      <a href="#features">機能</a>
+      <a href="#flow">使い方</a>
+      <a href="#demo">模擬自販機</a>
+      <a href="#price">料金</a>
+      <a href="#faq">FAQ</a>
     </div>
   </nav>
+</header>
 
-  <!-- Hero Section -->
-  <section class="hero" id="hero">
-    <div class="hero-content">
-      <!-- Badge -->
-      <div class="hero-badge">
-        <span class="hero-badge-dot"></span>
-        <span>v1.0 リリース - Discordbot</span>
-      </div>
-      
-      <!-- Title -->
-      <h1 class="hero-title">
-        Discord自販機を<br>
-        <span class="hero-title-gradient">自動化</span>する
-      </h1>
-      
-      <!-- Subtitle -->
-      <p class="hero-subtitle">
-        在庫管理・自動販売・PayPay連携を1つに。<br>
-        次世代Discord自販機BOT
-      </p>
-      
-      <!-- CTA Buttons -->
-      <div class="hero-cta">
-        <a href="#pricing" class="btn btn-primary">
-          <i class="fas fa-rocket mr-2"></i>
-          無料で始める
-        </a>
-        <a href="#features" class="btn btn-secondary">
-          <i class="fas fa-play mr-2"></i>
-          機能を見る
-        </a>
-      </div>
-      
-      <!-- Stats -->
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <div class="hero-stat-value">?</div>
-          <div class="hero-stat-label">導入サーバー</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-value">?</div>
-          <div class="hero-stat-label">自動販売数</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-value">?</div>
-          <div class="hero-stat-label">稼働率</div>
-        </div>
-      </div>
-      
-      <!-- Discord Chat Mock - Interactive Vending Machine -->
-      <div class="hero-mock">
-        <div class="discord-chat" id="vendingMock" style="max-width: 700px; margin: 0 auto; box-shadow: 0 25px 50px rgba(0,0,0,0.5);">
-          <!-- Channel Header -->
-          <div style="background: #2f3136; padding: 12px 16px; border-bottom: 1px solid #202225; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-hashtag" style="color: #72767d; font-size: 1.25rem;"></i>
-            <span style="font-weight: 600; color: white;">販売-ch</span>
-            <span style="color: #72767d; margin-left: 8px; font-size: 0.875rem;">イメージです！！</span>
-          </div>
+<section class="hero" id="top">
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
 
-          <!-- Chat Area -->
-          <div id="vendingChatArea" style="padding: 16px 0; min-height: 280px; max-height: 420px; overflow-y: auto;">
+  <span class="hero-deco" style="top:50px; left:6%;"><svg class="yen-bill" viewBox="0 0 180 110" style="width:90px; transform:rotate(-15deg);"><use href="#bundle"/></svg></span>
+  <span class="hero-deco" style="top:90px; right:8%; animation-delay:1s;"><svg viewBox="0 0 60 60" style="width:54px;"><use href="#coin"/></svg></span>
+  <span class="hero-deco" style="bottom:140px; left:10%; animation-delay:.6s;">🐱</span>
+  <span class="hero-deco" style="bottom:100px; right:10%; animation-delay:1.4s;"><svg class="yen-bill" viewBox="0 0 180 110" style="width:80px; transform:rotate(12deg);"><use href="#bundle"/></svg></span>
+  <span class="hero-deco" style="top:200px; left:18%; animation-delay:.3s;">💗</span>
+  <span class="hero-deco" style="top:240px; right:22%; animation-delay:1.8s;">🎀</span>
 
-            <!-- Bot Message - Vending Machine List -->
-            <div class="discord-message-group" id="vendingMachineMsg">
-              <div class="discord-avatar" style="background: #5865F2;">
-                <i class="fas fa-robot" style="color: white; font-size: 16px;"></i>
-              </div>
-              <div class="discord-content">
-                <div class="discord-header-line">
-                  <span class="discord-username" style="color: #5865F2;">Discash</span>
-                  <span class="discord-bot-badge">BOT</span>
-                  <span class="discord-timestamp">今日 14:32</span>
-                </div>
-                <div class="discord-embed-container">
-                  <div class="vending-list">
-                    <div class="vending-title">🛒 自動販売機</div>
-
-                    <div class="vending-item" data-id="1" data-name="Discord Nitro 1ヶ月" data-price="1200">
-                      <div class="vending-item-header">
-                        <span class="vending-number">1</span>
-                        <span class="vending-name">Discord Nitro 1ヶ月</span>
-                      </div>
-                      <div class="vending-box">
-                        <div class="vending-price">¥1,200</div>
-                      </div>
-                    </div>
-
-                    <div class="vending-item" data-id="2" data-name="Discord Nitro 3ヶ月" data-price="3500">
-                      <div class="vending-item-header">
-                        <span class="vending-number">2</span>
-                        <span class="vending-name">Discord Nitro 3ヶ月</span>
-                      </div>
-                      <div class="vending-box">
-                        <div class="vending-price">¥3,500</div>
-                      </div>
-                    </div>
-
-                    <div class="vending-item" data-id="3" data-name="Spotify Premium 1ヶ月" data-price="980">
-                      <div class="vending-item-header">
-                        <span class="vending-number">3</span>
-                        <span class="vending-name">Spotify Premium 1ヶ月</span>
-                      </div>
-                      <div class="vending-box">
-                        <div class="vending-price">¥980</div>
-                      </div>
-                    </div>
-
-                    <div class="vending-item" data-id="4" data-name="YouTube Premium 1ヶ月" data-price="780">
-                      <div class="vending-item-header">
-                        <span class="vending-number">4</span>
-                        <span class="vending-name">YouTube Premium 1ヶ月</span>
-                      </div>
-                      <div class="vending-box">
-                        <div class="vending-price">¥780</div>
-                      </div>
-                    </div>
-
-                    <div class="vending-actions">
-                      <button class="vending-btn vending-btn-buy" id="buyBtn">
-                        <i class="fas fa-shopping-cart"></i> 購入
-                      </button>
-                      <button class="vending-btn vending-btn-stock" id="stockBtn">
-                        <i class="fas fa-boxes"></i> 在庫確認
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Stock Check Message -->
-            <div class="discord-message-group vending-hidden" id="stockCheckMsg">
-              <div class="discord-avatar" style="background: #5865F2;">
-                <i class="fas fa-robot" style="color: white; font-size: 16px;"></i>
-              </div>
-              <div class="discord-content">
-                <div class="discord-header-line">
-                  <span class="discord-username" style="color: #5865F2;">Discash</span>
-                  <span class="discord-bot-badge">BOT</span>
-                  <span class="discord-timestamp">たった今</span>
-                </div>
-                <div class="discord-embed-container">
-                  <div class="vending-list">
-                    <div class="vending-title">📦 在庫状況</div>
-                    <div class="vending-stock-list">
-                      <div class="vending-stock-item"><span class="stock-name">Discord Nitro 1ヶ月</span><span class="stock-count">残り: 12個</span></div>
-                      <div class="vending-stock-item"><span class="stock-name">Discord Nitro 3ヶ月</span><span class="stock-count">残り: 8個</span></div>
-                      <div class="vending-stock-item"><span class="stock-name">Spotify Premium 1ヶ月</span><span class="stock-count">残り: 20個</span></div>
-                      <div class="vending-stock-item"><span class="stock-name">YouTube Premium 1ヶ月</span><span class="stock-count">残り: 5個</span></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Select Menu (appears after clicking buy) -->
-            <div class="discord-message-group vending-hidden" id="selectMenuMsg">
-              <div class="discord-avatar" style="background: #5865F2;">
-                <i class="fas fa-robot" style="color: white; font-size: 16px;"></i>
-              </div>
-              <div class="discord-content">
-                <div class="discord-header-line">
-                  <span class="discord-username" style="color: #5865F2;">Discash</span>
-                  <span class="discord-bot-badge">BOT</span>
-                  <span class="discord-timestamp">たった今</span>
-                </div>
-                <div class="discord-embed-container">
-                  <div class="vending-list">
-                    <div class="vending-title">📋 商品を選択してください</div>
-                    <div class="discord-select-wrapper">
-                      <div class="discord-select-menu" id="productSelect">
-                        <div class="discord-select-option" data-id="1" data-name="Discord Nitro 1ヶ月" data-price="1200">
-                          <span class="select-option-name">Discord Nitro 1ヶ月</span>
-                          <span class="select-option-price">¥1,200</span>
-                        </div>
-                        <div class="discord-select-option" data-id="2" data-name="Discord Nitro 3ヶ月" data-price="3500">
-                          <span class="select-option-name">Discord Nitro 3ヶ月</span>
-                          <span class="select-option-price">¥3,500</span>
-                        </div>
-                        <div class="discord-select-option" data-id="3" data-name="Spotify Premium 1ヶ月" data-price="980">
-                          <span class="select-option-name">Spotify Premium 1ヶ月</span>
-                          <span class="select-option-price">¥980</span>
-                        </div>
-                        <div class="discord-select-option" data-id="4" data-name="YouTube Premium 1ヶ月" data-price="780">
-                          <span class="select-option-name">YouTube Premium 1ヶ月</span>
-                          <span class="select-option-price">¥780</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Payment confirmation (in-chat) -->
-            <div class="discord-message-group vending-hidden" id="paymentMsg">
-              <div class="discord-avatar" style="background: #5865F2;">
-                <i class="fas fa-robot" style="color: white; font-size: 16px;"></i>
-              </div>
-              <div class="discord-content">
-                <div class="discord-header-line">
-                  <span class="discord-username" style="color: #5865F2;">Discash</span>
-                  <span class="discord-bot-badge">BOT</span>
-                  <span class="discord-timestamp">たった今</span>
-                </div>
-                <div class="discord-embed-container">
-                  <div class="vending-list">
-                    <div class="vending-title">💳 決済確認</div>
-                    <div class="vending-payment-product">
-                      <div class="vending-payment-icon"><i class="fas fa-box-open"></i></div>
-                      <div class="vending-payment-info">
-                        <div class="vending-payment-name" id="paymentProductName">Discord Nitro 1ヶ月</div>
-                        <div class="vending-payment-price" id="paymentProductPrice">¥1,200</div>
-                      </div>
-                    </div>
-                    <div class="vending-payment-actions">
-                      <a href="https://paypay.ne.jp/" target="_blank" class="vending-payment-btn paypay">
-                        <i class="fab fa-paypal"></i>
-                        <span>PayPayで支払う</span>
-                      </a>
-                      <button class="vending-payment-btn complete" id="paymentCompleteBtn">
-                        <i class="fas fa-check"></i> 決済完了（デモ）
-                      </button>
-                      <button class="vending-payment-btn cancel" id="paymentCancelBtn">
-                        キャンセル
-                      </button>
-                    </div>
-                    <div class="vending-payment-note">※ これはデモです。実際の決済はDiscord上で行われます。</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Processing message (appears after selecting product) -->
-            <div class="discord-message-group vending-hidden" id="processingMsg">
-              <div class="discord-avatar" style="background: #5865F2;">
-                <i class="fas fa-robot" style="color: white; font-size: 16px;"></i>
-              </div>
-              <div class="discord-content">
-                <div class="discord-header-line">
-                  <span class="discord-username" style="color: #5865F2;">Discash</span>
-                  <span class="discord-bot-badge">BOT</span>
-                  <span class="discord-timestamp">たった今</span>
-                </div>
-                <div class="discord-text">
-                  <div class="vending-processing">
-                    <i class="fas fa-circle-notch fa-spin"></i>
-                    <span>決済を処理中です...</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Product delivery message (appears after payment) -->
-            <div class="discord-message-group vending-hidden" id="deliveryMsg">
-              <div class="discord-avatar" style="background: #5865F2;">
-                <i class="fas fa-robot" style="color: white; font-size: 16px;"></i>
-              </div>
-              <div class="discord-content">
-                <div class="discord-header-line">
-                  <span class="discord-username" style="color: #5865F2;">Discash</span>
-                  <span class="discord-bot-badge">BOT</span>
-                  <span class="discord-timestamp">たった今</span>
-                </div>
-                <div class="discord-embed-container">
-                  <div class="vending-delivery">
-                    <div class="vending-delivery-icon">
-                      <i class="fas fa-gift"></i>
-                    </div>
-                    <div class="vending-delivery-title">購入完了！</div>
-                    <div class="vending-delivery-product" id="deliveryProductName">Discord Nitro 1ヶ月</div>
-                    <div class="vending-delivery-code" id="deliveryCode">
-                      <i class="fas fa-key"></i>
-                      <code>NITRO-XXXX-XXXX-XXXX</code>
-                      <button class="copy-btn" id="copyCodeBtn">
-                        <i class="fas fa-copy"></i>
-                      </button>
-                    </div>
-                    <div class="vending-delivery-note">DMにも送信しました 📩</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- Input Area -->
-          <div class="discord-input-area">
-            <i class="fas fa-plus-circle" style="color: #b9bbbe; cursor: pointer;"></i>
-            <span class="discord-input-text">メッセージを送信 #販売-ch</span>
-            <div style="margin-left: auto; display: flex; gap: 12px;">
-              <i class="fas fa-gift" style="color: #b9bbbe; cursor: pointer;"></i>
-              <i class="fas fa-smile" style="color: #b9bbbe; cursor: pointer;"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-
+  <div class="wrap">
+    <div class="hero-icon-wrap">
+      <img src="https://i.imgur.com/b8gUPxp.png" alt="Discash アイコン" class="hero-icon">
+      <span class="sparkle s1">✨</span>
+      <span class="sparkle s2">✨</span>
+      <span class="sparkle s3">💖</span>
     </div>
-  </section>
+    <h1>Discash</h1>
+    <p class="catch">PayPay対応・Discord全自動自販機BOT</p>
+    <p class="lead">注文から決済、商品のお渡しまで全部おまかせ。<br>あなたは寝てる間も売上が増える、にゃ🐱💕</p>
+    <div class="hero-badges">
+      <span class="badge">💳 PayPay自動決済</span>
+      <span class="badge">📦 在庫自動管理</span>
+      <span class="badge">⚡ 24時間無人販売</span>
+    </div>
+    <div class="hero-btns">
+      <a href="#cta" class="btn">サーバーに導入する 💖</a>
+      <a href="#demo" class="btn btn-pink">模擬自販機を試す 🎀</a>
+    </div>
+  </div>
+</section>
 
-  <!-- Features Section -->
-  <section class="section" id="features">
-    <div class="section-container">
-      <div class="section-header">
-        <span class="section-label">Features</span>
-        <h2 class="section-title">
-          <span>主要な</span>機能
-        </h2>
-        <p class="section-description">
-          必要な機能だけをシンプルに、本格的に。
-        </p>
+<section id="features">
+  <div class="wrap">
+    <h2 class="section-title">できること 🐾</h2>
+    <p class="section-sub">F E A T U R E S</p>
+    <div class="features">
+      <div class="feature-card"><div class="feature-emoji">🤖</div><h3>全自動販売</h3><p>ユーザーが商品を選ぶと、BOTが受付から商品のお渡しまで全自動で処理。深夜でも手が空きません。</p></div>
+      <div class="feature-card"><div class="feature-emoji">💳</div><h3>PayPay決済</h3><p>PayPay受取リンクで簡単決済。入力されたリンクを自動で検証し、確認後すぐに商品を発行します。</p></div>
+      <div class="feature-card"><div class="feature-emoji">📦</div><h3>在庫自動管理</h3><p>売れた分だけ在庫を自動で減算。在庫切れ商品は自動で「売り切れ」表示に切り替わります。</p></div>
+      <div class="feature-card"><div class="feature-emoji">🎫</div><h3>商品の自動発行</h3><p>アカウント情報・シリアルコード・ファイルなどをDMで自動送付。手渡し作業は不要です。</p></div>
+      <div class="feature-card"><div class="feature-emoji">📊</div><h3>売上ダッシュボード</h3><p>売上・販売数・在庫状況をコマンド一つで確認。日次・月次の集計もまるっと把握できます。</p></div>
+      <div class="feature-card"><div class="feature-emoji">🛡️</div><h3>不正対策</h3><p>多重注文や決済キャンセルを検知。ログ記録で取引はしっかり追跡できて安心です。</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="flow" style="background: linear-gradient(135deg, var(--pink-light) 0%, #ffeef7 50%, #f5e5ff 100%); border-radius:60px; margin:0 12px; box-shadow: inset 0 6px 20px rgba(255, 95, 168, 0.12);">
+  <div class="wrap">
+    <h2 class="section-title">かんたん4ステップ 🎀</h2>
+    <p class="section-sub">H O W &nbsp; T O &nbsp; U S E</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div><h3>BOTを導入</h3><p>サーバーにDiscashを招待して、販売チャンネルを設定するだけ。</p></div><span class="step-cat">🐱</span></div>
+      <div class="step"><div class="step-num">2</div><div><h3>商品を登録</h3><p>商品名・価格・在庫・お渡し内容をコマンドで登録します。</p></div><span class="step-cat">🎫</span></div>
+      <div class="step"><div class="step-num">3</div><div><h3>お客さんが購入</h3><p>ユーザーがボタンで商品を選び、PayPay受取リンクを送信。BOTが自動確認。</p></div><span class="step-cat"><svg viewBox="0 0 180 110" style="width:42px;"><use href="#bundle"/></svg></span></div>
+      <div class="step"><div class="step-num">4</div><div><h3>自動でお渡し完了</h3><p>決済確認後、商品が自動でDM送付。在庫も自動更新で完了！</p></div><span class="step-cat">🎉</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <h2 class="section-title">模擬自販機であそぼ 🐱💕</h2>
+    <p class="section-sub">D E M O（実際の決済は発生しません）</p>
+
+    <div class="demo-mascot">
+      <img src="https://i.imgur.com/WjuIyil.png" alt="案内猫">
+      <div class="mascot-bubble">
+        商品をえらんで<br>「購入する」を押してにゃ🐾<br>
+        <span class="bubble-mini">下のDM画面に商品が届くよ💖</span>
       </div>
-      
-      <div class="features-grid">
-        <!-- Feature 1 -->
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-box-open text-brand-cyan"></i>
-          </div>
-          <h3 class="feature-title">自動受取・配布</h3>
-          <p class="feature-description">
-            購入後すぐに在庫を自動配布。手動対応不要。24時間365日いつでも購入可能。
-          </p>
+    </div>
+
+    <div class="dc-app">
+      <aside class="dc-servers">
+        <div class="dc-server home">
+          <svg viewBox="0 0 28 20" width="22" height="16" fill="#fff"><path d="M23.02 1.68C21.31.88 19.51.32 17.66 0c-.23.42-.45.85-.64 1.3-1.97-.3-3.97-.3-5.93 0-.19-.45-.41-.88-.64-1.3C8.61.32 6.8.88 5.09 1.68 1.68 6.7.76 11.59 1.22 16.41a25 25 0 0 0 6.56 3.28c.53-.71 1-1.46 1.4-2.25-.77-.28-1.5-.63-2.21-1.04.19-.13.37-.27.55-.4 4.1 1.92 8.57 1.92 12.62 0 .18.14.36.27.55.4-.71.42-1.45.76-2.22 1.05.4.79.87 1.54 1.4 2.24a25 25 0 0 0 6.56-3.28c.55-5.59-.92-10.44-3.88-14.73zM9.34 13.47c-1.31 0-2.4-1.19-2.4-2.65 0-1.46 1.05-2.66 2.4-2.66 1.34 0 2.42 1.2 2.4 2.66 0 1.46-1.07 2.65-2.4 2.65zm8.86 0c-1.31 0-2.4-1.19-2.4-2.65 0-1.46 1.06-2.66 2.4-2.66s2.42 1.2 2.4 2.66c0 1.46-1.05 2.65-2.4 2.65z"/></svg>
         </div>
-        
-        <!-- Feature 2 -->
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-key text-brand-purple"></i>
-          </div>
-          <h3 class="feature-title">利用権システム</h3>
-          <p class="feature-description">
-            利用権購入が自動化。サブスクリプション型。
-          </p>
+        <div class="dc-server-sep"></div>
+        <div class="dc-server active">
+          <img src="https://i.imgur.com/b8gUPxp.png" alt="Discash">
+          <span class="pill"></span>
         </div>
-        
-        <!-- Feature 3 -->
-        <div class="feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-shield-alt text-red-400"></i>
-          </div>
-          <h3 class="feature-title">安全設計</h3>
-          <p class="feature-description">
-            多重検証・暗号化保存・不正検知。安心してBOTを運用できます。
-          </p>
+        <div class="dc-server faded">N</div>
+        <div class="dc-server faded">🎮</div>
+        <div class="dc-server add">+</div>
+      </aside>
+
+      <aside class="dc-channels">
+        <div class="dc-guild-name">Discash Shop 🐱
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
         </div>
+        <div class="dc-cat">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+          ようこそ
+        </div>
+        <div class="dc-ch"><span class="dc-ch-hash">#</span>はじめに</div>
+        <div class="dc-ch"><span class="dc-ch-hash">#</span>お知らせ</div>
+        <div class="dc-cat">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+          ショップ
+        </div>
+        <div class="dc-ch active">
+          <span class="dc-ch-hash">#</span>自販機
+          <span class="dc-ch-badge">NEW</span>
+        </div>
+        <div class="dc-ch"><span class="dc-ch-hash">#</span>領収書</div>
+        <div class="dc-ch"><span class="dc-ch-hash">#</span>サポート</div>
+
+        <div class="dc-userbar">
+          <img src="https://i.imgur.com/WjuIyil.png" alt="you">
+          <div class="dc-userbar-info">
+            <div class="dc-userbar-name">あなた</div>
+            <div class="dc-userbar-status">オンライン</div>
+          </div>
+          <div class="dc-userbar-icons">
+            <span>🎤</span><span>🎧</span><span>⚙️</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="dc-main">
+        <div class="dc-header">
+          <span class="hash">#</span>
+          <span class="dc-header-name">自販機</span>
+          <span class="dc-header-divider"></span>
+          <span class="dc-header-topic">PayPay対応・全自動販売チャンネル 🐾</span>
+          <span class="dot">
+            <span>🔔</span><span>📌</span><span>👥</span>
+          </span>
+        </div>
+
+        <div class="dc-chat" id="dcChat">
+          <div class="dc-datesep"><span>今日</span></div>
+
+          <div class="dc-message">
+            <img class="dc-avatar" src="https://i.imgur.com/b8gUPxp.png" alt="bot">
+            <div class="dc-body">
+              <div class="dc-author">
+                <span class="dc-name">Discash</span>
+                <span class="dc-tag">✓ BOT</span>
+                <span class="dc-time">今日 21:00</span>
+              </div>
+              <div class="dc-embed shop-embed">
+                <img class="dc-embed-thumb" src="https://i.imgur.com/b8gUPxp.png" alt="">
+                <div class="dc-embed-title">🛒 Discash 自販機</div>
+                <div class="dc-embed-desc">買いたい商品をえらんで、下のボタンを押してにゃ🐾<br><span style="color:#a5d8ff;">在庫はリアルタイムで更新されるよ💖</span></div>
+                <div class="dc-fieldrow">
+                  <div class="dc-field"><div class="dc-field-name">📦 商品数</div><div class="dc-field-val">4 種類</div></div>
+                  <div class="dc-field"><div class="dc-field-name">💴 決済</div><div class="dc-field-val">PayPay</div></div>
+                  <div class="dc-field"><div class="dc-field-name">⚡ 受取</div><div class="dc-field-val">DM自動</div></div>
+                </div>
+                <div class="dc-products" id="products"></div>
+                <div class="dc-buttons">
+                  <button class="dc-btn green" id="buyBtn">💳 購入する</button>
+                  <button class="dc-btn gray" id="resetBtn">🔄 リセット</button>
+                </div>
+                <div class="dc-embed-footer">
+                  <img src="https://i.imgur.com/b8gUPxp.png" alt="">
+                  Discash • PayPay対応 自動販売 • <span id="nowTime">--:--</span>
+                </div>
+              </div>
+              <div class="dc-reactions">
+                <div class="dc-reaction"><span>💖</span> 12</div>
+                <div class="dc-reaction"><span>🐱</span> 8</div>
+                <div class="dc-reaction me"><span>🛒</span> 24</div>
+                <div class="dc-reaction add">＋</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="replyArea"></div>
+        </div>
+
+        <div class="dc-inputbar">
+          <span class="dc-input-plus">＋</span>
+          <span class="dc-input-text" id="typingText">#自販機 にメッセージを送信</span>
+          <span class="dc-input-icons">🎁 GIF 🐱 😊</span>
+        </div>
+      </main>
+
+      <aside class="dc-members">
+        <div class="dc-members-title">オンライン — 3</div>
+        <div class="dc-member bot">
+          <img src="https://i.imgur.com/b8gUPxp.png" alt="">
+          <div>
+            <div class="dc-member-name">Discash <span class="dc-tag mini">BOT</span></div>
+            <div class="dc-member-status">🛒 販売中</div>
+          </div>
+        </div>
+        <div class="dc-member">
+          <img src="https://i.imgur.com/WjuIyil.png" alt="">
+          <div>
+            <div class="dc-member-name">あなた</div>
+            <div class="dc-member-status">🐾 ねこ気分</div>
+          </div>
+          <span class="dc-dot online"></span>
+        </div>
+        <div class="dc-member">
+          <div class="dc-avatar-fallback" style="background:linear-gradient(135deg,#ffb3d9,#b78bff);">M</div>
+          <div>
+            <div class="dc-member-name">みけちゃん</div>
+            <div class="dc-member-status">💕 おかいもの中</div>
+          </div>
+          <span class="dc-dot online"></span>
+        </div>
+        <div class="dc-members-title">オフライン — 1</div>
+        <div class="dc-member off">
+          <div class="dc-avatar-fallback" style="background:#777;">K</div>
+          <div>
+            <div class="dc-member-name">くろねこ</div>
+            <div class="dc-member-status">💤 おやすみ中</div>
+          </div>
+          <span class="dc-dot offline"></span>
+        </div>
+      </aside>
+    </div>
+
+    <div class="dm-panel">
+      <div class="dm-header">
+        <img src="https://i.imgur.com/b8gUPxp.png" alt="Discash">
+        <div class="dm-header-text">
+          <div class="dm-header-title">Discash からのダイレクトメッセージ</div>
+          <div class="dm-header-sub">@あなた • 商品がここに届きます 💌</div>
+        </div>
+        <div class="dm-header-badge" id="dmBadge">0 件</div>
       </div>
-      
-      <!-- And More Banner -->
-      <div style="margin-top: 3rem; text-align: center;">
-        <div style="display: inline-flex; align-items: center; gap: 1rem; background: linear-gradient(135deg, rgba(88, 101, 242, 0.2) 0%, rgba(0, 212, 255, 0.2) 100%); border: 1px solid rgba(88, 101, 242, 0.3); border-radius: 9999px; padding: 1.5rem 3rem;">
-          <i class="fas fa-magic text-2xl" style="color: #5865F2;"></i>
-          <span style="font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, #5865F2 0%, #00d4ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">...ほかにもいろいろ！</span>
-          <i class="fas fa-sparkles text-2xl" style="color: #00d4ff;"></i>
+      <div class="dm-body" id="dmBody">
+        <div class="dm-empty" id="dmEmpty">
+          <span class="dm-cat">🐱💭</span>
+          まだDMは届いてないにゃ。<br>
+          商品を購入するとここに届くよ💖
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- Pricing Section -->
-  <section class="section" id="pricing" style="background: rgba(0,0,0,0.3);">
-    <div class="section-container">
-      <div class="section-header">
-        <span class="section-label">Pricing</span>
-        <h2 class="section-title">
-          <span>シンプルな</span>料金設定
-        </h2>
-        <p class="section-description">
-          一つのプランの料金体系
-        </p>
-      </div>
-      
-      <div style="max-width: 450px; margin: 0 auto;">
-        <!-- Single Pro Plan -->
-        <div class="pricing-card featured">
-          <div class="pricing-header">
-            <h3 class="pricing-name" style="background: linear-gradient(135deg, #00f0ff 0%, #00d4ff 50%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Pro</h3>
-            <div class="pricing-price">¥500<span>/月</span></div>
-            <p class="pricing-description">すべての機能が使い放題</p>
+    <div class="pp-modal" id="ppModal">
+      <div class="pp-card">
+        <button class="pp-close" id="ppClose">✕</button>
+        <div class="pp-bot-head">
+          <img src="https://i.imgur.com/b8gUPxp.png" alt="bot">
+          <div class="pp-bot-head-text">
+            <div class="n">Discash 決済窓口</div>
+            <div class="s">PayPay受取リンクを送信してね💖</div>
           </div>
-          
-          <ul class="pricing-features">
-            <li class="pricing-feature included">PayPay自動受け取り</li>
-            <li class="pricing-feature included">無制限の在庫管理</li>
-            <li class="pricing-feature included">ダッシュボードアクセス</li>
-            <li class="pricing-feature included">優先サポート</li>
-            <li class="pricing-feature included">カスタマイズ可能</li>
-          </ul>
-          
-          <a href="https://discord.gg/BePFRhU7ve" target="_blank" class="btn btn-primary pricing-cta" style="background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%); box-shadow: 0 0 30px rgba(88, 101, 242, 0.4);">
-            <i class="fab fa-discord mr-2"></i>Discordで購入
-          </a>
         </div>
+        <div class="pp-amount">¥<span id="ppAmount">0</span></div>
+        <div class="pp-desc">Discash 自販機 / <span id="ppItem">-</span></div>
+
+        <div style="position:relative;">
+          <div class="pp-cat-side">
+            <img src="https://i.imgur.com/WjuIyil.png" alt="cat">
+            <div class="pp-cat-bubble">リンクを貼ってにゃ📎</div>
+          </div>
+
+          <div class="pp-input-label">
+            <span>📎 PayPay 受取リンク</span>
+            <span class="req">必須</span>
+          </div>
+          <div class="pp-input-wrap">
+            <span class="pp-input-icon">🔗</span>
+            <input type="text" class="pp-input" id="ppLink" value="https://pay.paypay.ne.jp/abc12345XYZneko" spellcheck="false">
+          </div>
+        </div>
+
+        <button class="pp-pay-btn" id="ppPay">💳 受取リンクを送信する</button>
+        <div class="pp-note">※デモ画面です。実際の決済は発生しません</div>
       </div>
     </div>
-  </section>
 
-  <!-- FAQ Section - 6 Items -->
-  <section class="section" id="faq">
-    <div class="section-container" style="max-width: 800px;">
-      <div class="section-header">
-        <span class="section-label">FAQ</span>
-        <h2 class="section-title">
-          <span>よくある</span>質問
-        </h2>
-      </div>
-      
-      <div style="display: flex; flex-direction: column; gap: 1rem;">
-        <!-- FAQ 1 -->
-        <div style="background: linear-gradient(180deg, rgba(22,22,31,0.8) 0%, rgba(10,10,15,0.9) 100%); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden;">
-          <button class="faq-toggle" data-faq="1" style="width: 100%; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; background: transparent; border: none; color: white; cursor: pointer; font-size: 1rem; font-weight: 600;">
-            <span>導入は難しくないですか？</span>
-            <i class="fas fa-chevron-down" style="transition: transform 0.3s; color: #00d4ff;"></i>
-          </button>
-          <div id="faq-1" class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease;">
-            <div style="padding: 0 1.5rem 1.5rem; color: #a1a1aa; line-height: 1.6;">
-              簡単です！DiscordサーバーにBOTを招待するだけ。設定も直感的なUIで、誰でもすぐに使い始められます。導入後の設定ガイドも完備しています。
-            </div>
-          </div>
-        </div>
-        
-        <!-- FAQ 2 -->
-        <div style="background: linear-gradient(180deg, rgba(22,22,31,0.8) 0%, rgba(10,10,15,0.9) 100%); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden;">
-          <button class="faq-toggle" data-faq="2" style="width: 100%; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; background: transparent; border: none; color: white; cursor: pointer; font-size: 1rem; font-weight: 600;">
-            <span>支払い方法は？</span>
-            <i class="fas fa-chevron-down" style="transition: transform 0.3s; color: #00d4ff;"></i>
-          </button>
-          <div id="faq-2" class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease;">
-            <div style="padding: 0 1.5rem 1.5rem; color: #a1a1aa; line-height: 1.6;">
-              PayPayです。入金後0秒で使用開始できますDiscordサーバーで詳細をご確認いただけます。
-            </div>
-          </div>
-        </div>
-        
-        <!-- FAQ 3 -->
-        <div style="background: linear-gradient(180deg, rgba(22,22,31,0.8) 0%, rgba(10,10,15,0.9) 100%); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden;">
-          <button class="faq-toggle" data-faq="3" style="width: 100%; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; background: transparent; border: none; color: white; cursor: pointer; font-size: 1rem; font-weight: 600;">
-            <span>サーバー移設はできますか？</span>
-            <i class="fas fa-chevron-down" style="transition: transform 0.3s; color: #00d4ff;"></i>
-          </button>
-          <div id="faq-3" class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease;">
-            <div style="padding: 0 1.5rem 1.5rem; color: #a1a1aa; line-height: 1.6;">
-              はい、可能です。サポートサーバーでお問い合わせいただければ、スムーズに移行させていただきます。データのバックアップもサポートします。
-            </div>
-          </div>
-        </div>
-        
-        <!-- FAQ 4 - NEW -->
-        <div style="background: linear-gradient(180deg, rgba(22,22,31,0.8) 0%, rgba(10,10,15,0.9) 100%); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden;">
-          <button class="faq-toggle" data-faq="4" style="width: 100%; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; background: transparent; border: none; color: white; cursor: pointer; font-size: 1rem; font-weight: 600;">
-            <span>複数サーバーで使えますか？</span>
-            <i class="fas fa-chevron-down" style="transition: transform 0.3s; color: #00d4ff;"></i>
-          </button>
-          <div id="faq-4" class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease;">
-            <div style="padding: 0 1.5rem 1.5rem; color: #a1a1aa; line-height: 1.6;">
-              いいえ、1つのライセンスにつき1サーバーでのご利用となります。複数サーバーでのご利用を希望される場合は、追加ラの購入が必要です。詳細はサポートサーバーでお問い合わせください。
-            </div>
-          </div>
-        </div>
-        
-        <!-- FAQ 5 - NEW -->
-        <div style="background: linear-gradient(180deg, rgba(22,22,31,0.8) 0%, rgba(10,10,15,0.9) 100%); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden;">
-          <button class="faq-toggle" data-faq="5" style="width: 100%; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; background: transparent; border: none; color: white; cursor: pointer; font-size: 1rem; font-weight: 600;">
-            <span>トラブル時のサポートは？</span>
-            <i class="fas fa-chevron-down" style="transition: transform 0.3s; color: #00d4ff;"></i>
-          </button>
-          <div id="faq-5" class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease;">
-            <div style="padding: 0 1.5rem 1.5rem; color: #a1a1aa; line-height: 1.6;">
-              Discordサポートサーバーにて24時間対応しています。Proプランでは優先サポートが付属し、通常より速くご対応いたします。緊急時は専用チャンネルでご連絡ください。
-            </div>
-          </div>
-        </div>
-        
-        <!-- FAQ 6 - NEW -->
-        <div style="background: linear-gradient(180deg, rgba(22,22,31,0.8) 0%, rgba(10,10,15,0.9) 100%); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden;">
-          <button class="faq-toggle" data-faq="6" style="width: 100%; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; background: transparent; border: none; color: white; cursor: pointer; font-size: 1rem; font-weight: 600;">
-            <span>解約・返金はできますか？</span>
-            <i class="fas fa-chevron-down" style="transition: transform 0.3s; color: #00d4ff;"></i>
-          </button>
-          <div id="faq-6" class="faq-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease;">
-            <div style="padding: 0 1.5rem 1.5rem; color: #a1a1aa; line-height: 1.6;">
-              いつでも解約可能です。月額課金は当月分のみの請求で、翌月以降は停止されます。
-            </div>
-          </div>
-        </div>
+    <div class="success-splash" id="successSplash">
+      <img src="https://i.imgur.com/WjuIyil.png" alt="thanks cat">
+      <div class="success-bubble">
+        ありがとにゃ💕<br>
+        <small>DMに商品を送ったよ🎁</small>
       </div>
     </div>
-  </section>
 
-  <!-- Contact Section - Prominent CTA -->
-  <section class="section" id="contact" style="background: linear-gradient(135deg, rgba(88, 101, 242, 0.15) 0%, rgba(0, 212, 255, 0.1) 100%); position: relative; overflow: hidden;">
-    <!-- Glow Effect -->
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(88, 101, 242, 0.3) 0%, transparent 70%); pointer-events: none;"></div>
-    
-    <div class="section-container" style="max-width: 700px; position: relative; z-index: 1;">
-      <div style="text-align: center;">
-        <div style="display: inline-flex; align-items: center; gap: 0.75rem; background: rgba(88, 101, 242, 0.2); border: 1px solid rgba(88, 101, 242, 0.4); border-radius: 9999px; padding: 0.75rem 1.5rem; margin-bottom: 2rem;">
-          <i class="fas fa-headset" style="color: #5865F2; font-size: 1.25rem;"></i>
-          <span style="color: #5865F2; font-weight: 600;">24時間サポート対応中</span>
-        </div>
-        
-        <h2 class="section-title" style="font-size: 2.5rem; margin-bottom: 1rem;">
-          <span>ご質問・ご相談は</span><br>お気軽にどうぞ
-        </h2>
-        
-        <p class="section-description" style="font-size: 1.125rem; margin-bottom: 2.5rem;">
-          導入前のご質問から運用中のトラブルまで<br>
-          Discordで素早くサポートいたします
-        </p>
-        
-        <!-- Big CTA Button -->
-        <a href="https://discord.gg/BePFRhU7ve" target="_blank" style="display: inline-flex; align-items: center; gap: 1rem; background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%); color: white; padding: 1.25rem 3rem; border-radius: 16px; font-size: 1.25rem; font-weight: 700; text-decoration: none; box-shadow: 0 10px 40px rgba(88, 101, 242, 0.5); transition: all 0.3s; border: 2px solid rgba(255,255,255,0.1);">
-          <i class="fab fa-discord text-2xl"></i>
-          <span>Discordサポートサーバーに参加</span>
-          <i class="fas fa-arrow-right"></i>
-        </a>
-        
-        <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 2.5rem; flex-wrap: wrap;">
-          <div style="display: flex; align-items: center; gap: 0.5rem; color: #a1a1aa;">
-            <i class="fas fa-check-circle" style="color: #3ba55d;"></i>
-            <span>迅速な対応</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 0.5rem; color: #a1a1aa;">
-            <i class="fas fa-check-circle" style="color: #3ba55d;"></i>
-            <span>導入サポート完備</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 0.5rem; color: #a1a1aa;">
-            <i class="fas fa-check-circle" style="color: #3ba55d;"></i>
-            <span>日本語対応</span>
-          </div>
-        </div>
+    <p class="demo-note">💴 お札やコインが舞う、本物そっくりの自販機体験 💰</p>
+  </div>
+</section>
+
+<section id="price" style="background: linear-gradient(135deg, #f5e5ff 0%, var(--pink-light) 50%, #ffeef7 100%); border-radius:60px; margin:0 12px; box-shadow: inset 0 6px 20px rgba(162, 89, 255, 0.12);">
+  <div class="wrap">
+    <h2 class="section-title">料金プラン 💰</h2>
+    <p class="section-sub">P R I C I N G</p>
+    <div class="price-wrap">
+      <div class="price-card">
+        <span class="corner-cat">😺</span>
+        <h3>プレミアム</h3>
+        <div class="price">¥500<small>/月</small></div>
+        <ul>
+          <li>商品登録 無制限</li>
+          <li>PayPay自動決済確認</li>
+          <li>売上ダッシュボード</li>
+          <li>不正対策・ログ機能</li>
+          <li>優先サポート</li>
+          <li>全機能フル開放</li>
+        </ul>
       </div>
     </div>
-  </section>
-
-  <!-- Footer -->
-  <footer style="background: rgba(0,0,0,0.5); border-top: 1px solid rgba(255,255,255,0.05); padding: 3rem 1.5rem;">
-    <div style="max-width: 1280px; margin: 0 auto;">
-      <div style="display: flex; flex-direction: column; md:flex-row; justify-content: space-between; align-items: center; gap: 2rem;">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-          <img src="images/logo.png" alt="Discash" style="width: 40px; height: 40px; border-radius: 10px;">
-          <span style="font-weight: 700; font-size: 1.25rem;">Discash</span>
-        </div>
-        
-        <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
-          <a href="#features" style="color: #71717a; text-decoration: none; transition: color 0.3s;">機能</a>
-          <a href="#pricing" style="color: #71717a; text-decoration: none; transition: color 0.3s;">料金</a>
-          <a href="#faq" style="color: #71717a; text-decoration: none; transition: color 0.3s;">FAQ</a>
-          <a href="#contact" style="color: #71717a; text-decoration: none; transition: color 0.3s;">お問い合わせ</a>
-        </div>
-        
-        <div style="display: flex; gap: 1rem;">
-          <a href="https://discord.gg/BePFRhU7ve" target="_blank" style="width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #71717a; transition: all 0.3s; text-decoration: none;">
-            <i class="fab fa-discord"></i>
-          </a>
-          <a href="#" style="width: 40px; height: 40px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #71717a; transition: all 0.3s; text-decoration: none;">
-            <i class="fab fa-twitter"></i>
-          </a>
-        </div>
-      </div>
-      
-      <div style="border-top: 1px solid rgba(255,255,255,0.05); margin-top: 2rem; padding-top: 2rem; text-align: center; color: #52525b; font-size: 0.875rem;">
-        © 2024 Discash. All rights reserved.
-      </div>
+    <div class="terms">
+      <h3>利用規約（抜粋）</h3>
+      <ol>
+        <li>本BOTはDiscordサーバー内でのデジタル商品・サービスの販売を補助するツールです。</li>
+        <li>販売する商品の内容・適法性については、すべて利用者（販売者）の責任となります。</li>
+        <li>Discordの利用規約およびPayPayの利用規約に違反する用途での使用は禁止します。</li>
+        <li>違法物・規約違反物・第三者の権利を侵害する商品の販売は固く禁止します。</li>
+        <li>決済トラブル等について、運営は当事者間の取引内容に関する責任を負いません。</li>
+        <li>本規約は予告なく改定される場合があります。最新版は本サイトに掲載します。</li>
+      </ol>
     </div>
-  </footer>
+  </div>
+</section>
 
-  <!-- Scripts -->
-  <script>
-    // Particles
-    function createParticles() {
-      const container = document.getElementById('particles');
-      for (let i = 0; i < 20; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.width = Math.random() * 4 + 2 + 'px';
-        particle.style.height = particle.style.width;
-        particle.style.animationDuration = Math.random() * 10 + 15 + 's';
-        particle.style.animationDelay = Math.random() * 10 + 's';
-        container.appendChild(particle);
-      }
+<section id="faq">
+  <div class="wrap">
+    <h2 class="section-title">よくある質問 💭</h2>
+    <p class="section-sub">F A Q</p>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q">料金はいくらですか？<span class="faq-arrow">▾</span></div><div class="faq-a">プレミアムプラン（月額¥500）の単一プランです。すべての機能を制限なくご利用いただけます。</div></div>
+      <div class="faq-item"><div class="faq-q">PayPay以外の決済は使えますか？<span class="faq-arrow">▾</span></div><div class="faq-a">現在はPayPay受取リンクに対応しています。他の決済手段については今後のアップデートで検討中です。</div></div>
+      <div class="faq-item"><div class="faq-q">在庫がなくなったらどうなりますか？<span class="faq-arrow">▾</span></div><div class="faq-a">在庫が0になると自動的に「売り切れ」表示へ切り替わり、購入できなくなります。在庫を補充すれば再び販売が再開されます。</div></div>
+      <div class="faq-item"><div class="faq-q">導入は難しいですか？<span class="faq-arrow">▾</span></div><div class="faq-a">BOTをサーバーに招待し、コマンドで商品を登録するだけです。詳しい手順はサポートサーバーで案内しています。</div></div>
+      <div class="faq-item"><div class="faq-q">どんな商品を売れますか？<span class="faq-arrow">▾</span></div><div class="faq-a">シリアルコード、テキスト、ファイルなどのデジタル商品全般に対応しています。ただし違法・規約違反の商品の販売は禁止です。</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="cta" class="cta">
+  <span class="cta-cat" style="top:24px; left:8%;">🐱</span>
+  <span class="cta-cat" style="bottom:24px; right:10%; animation-delay:1s;"><svg viewBox="0 0 180 110" style="width:80px; filter:drop-shadow(0 6px 12px rgba(0,0,0,0.3));"><use href="#bundle"/></svg></span>
+  <span class="cta-cat" style="top:30%; right:15%; animation-delay:.5s;">💖</span>
+  <span class="cta-cat" style="bottom:30%; left:12%; animation-delay:1.5s;"><svg viewBox="0 0 60 60" style="width:50px;"><use href="#coin"/></svg></span>
+  <h2>今すぐDiscashを始めよう！</h2>
+  <p>無人でも売れる自販機を、あなたのサーバーに。🐱✨</p>
+  <a href="https://discord.gg/your-invite-code" class="btn" target="_blank" rel="noopener">Discordサーバーに参加する 💕</a>
+</section>
+
+<footer>
+  <div class="nav-logo">
+    <img src="https://i.imgur.com/b8gUPxp.png" alt="Discash" style="width:34px;height:34px;border-radius:50%; border:2px solid #fff; box-shadow:0 4px 10px rgba(138,61,255,0.25);">
+    Discash
+  </div>
+  <p>© 2026 Discash. All rights reserved.</p>
+  <p style="font-size:0.75rem;color:#aaa;margin-top:6px;">※本サイトはBOT紹介用のデモページです。PayPayはPayPay株式会社の登録商標です。</p>
+</footer>
+
+<script>
+  const floatItems = [
+    { type: "emoji", val: "🐱" },{ type: "emoji", val: "🐾" },
+    { type: "emoji", val: "😺" },{ type: "emoji", val: "💖" },
+    { type: "emoji", val: "🎀" },{ type: "emoji", val: "✨" },
+    { type: "svg", val: "bundle", w: 60, ratio: 110/180 },
+    { type: "svg", val: "bundle", w: 70, ratio: 110/180 },
+    { type: "svg", val: "coin", w: 40, ratio: 1 },
+    { type: "svg", val: "coin", w: 34, ratio: 1 },
+  ];
+  const floatiesEl = document.getElementById("floaties");
+  for (let i = 0; i < 18; i++) {
+    const item = floatItems[Math.floor(Math.random()*floatItems.length)];
+    let s;
+    if (item.type === "emoji") {
+      s = document.createElement("span");
+      s.textContent = item.val;
+      s.className = "floaty-item emoji";
+      s.style.fontSize = (1.4 + Math.random()*1.6) + "rem";
+    } else {
+      s = document.createElement("div");
+      s.className = "floaty-item";
+      const w = item.w + Math.random()*30;
+      s.innerHTML = `<svg viewBox="0 0 ${item.val==='bundle'?180:60} ${item.val==='bundle'?110:60}" style="width:${w}px;height:${w*item.ratio}px;"><use href="#${item.val}"/></svg>`;
     }
-    createParticles();
-    
-    // Navbar scroll effect
-    window.addEventListener('scroll', () => {
-      const navbar = document.getElementById('navbar');
-      if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
+    s.style.left = Math.random()*100 + "vw";
+    s.style.bottom = "-40px";
+    s.style.animationDuration = (12 + Math.random()*14) + "s";
+    s.style.animationDelay = (Math.random()*12) + "s";
+    floatiesEl.appendChild(s);
+  }
+
+  const initialProducts = [
+    { emoji: "🎫", name: "招待コード", price: 100, stock: 5, deliver: () => `INV-${randCode(8)}` },
+    { emoji: "🎮", name: "ゲーム特典", price: 300, stock: 3, deliver: () => `GAME-${randCode(10)}` },
+    { emoji: "🎨", name: "限定スタンプ", price: 200, stock: 0, deliver: () => `STAMP-${randCode(6)}` },
+    { emoji: "⭐", name: "VIPロール", price: 500, stock: 2, deliver: () => `VIP-${randCode(12)}` },
+  ];
+  function randCode(n){ const s="ABCDEFGHJKMNPQRSTUVWXYZ23456789"; let r=""; for(let i=0;i<n;i++) r+=s[Math.floor(Math.random()*s.length)]; return r; }
+
+  let productData = JSON.parse(JSON.stringify(initialProducts)).map((p,i)=>{ p.deliver = initialProducts[i].deliver; return p; });
+  let selectedIndex = null;
+  let dmCount = 0;
+
+  const productsEl = document.getElementById("products");
+  const replyArea = document.getElementById("replyArea");
+  const buyBtn = document.getElementById("buyBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const ppModal = document.getElementById("ppModal");
+  const ppClose = document.getElementById("ppClose");
+  const ppPay = document.getElementById("ppPay");
+  const ppAmount = document.getElementById("ppAmount");
+  const ppItem = document.getElementById("ppItem");
+  const ppLink = document.getElementById("ppLink");
+  const successSplash = document.getElementById("successSplash");
+  const nowTimeEl = document.getElementById("nowTime");
+  const typingText = document.getElementById("typingText");
+  const dmBody = document.getElementById("dmBody");
+  const dmEmpty = document.getElementById("dmEmpty");
+  const dmBadge = document.getElementById("dmBadge");
+
+  function updateNowTime() {
+    const d = new Date();
+    nowTimeEl.textContent = `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
+  }
+  updateNowTime();
+  setInterval(updateNowTime, 30000);
+
+  function renderProducts() {
+    productsEl.innerHTML = "";
+    productData.forEach((p, i) => {
+      const div = document.createElement("div");
+      div.className = "dc-product" + (p.stock === 0 ? " soldout" : "") + (selectedIndex === i ? " selected" : "");
+      div.innerHTML = `
+        <div class="pn">${p.emoji} ${p.name}</div>
+        <div class="pp">¥${p.price}</div>
+        <div class="ps">${p.stock === 0 ? "🈳 売り切れ" : "在庫 " + p.stock}</div>
+      `;
+      if (p.stock > 0) {
+        div.addEventListener("click", () => {
+          selectedIndex = i;
+          renderProducts();
+        });
       }
-      
-      // Scroll progress
-      const scrollProgress = document.getElementById('scrollProgress');
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercent = (scrollTop / docHeight) * 100;
-      scrollProgress.style.width = scrollPercent + '%';
+      productsEl.appendChild(div);
     });
-    
-    // FAQ Toggle
-    document.querySelectorAll('.faq-toggle').forEach(button => {
-      button.addEventListener('click', () => {
-        const faqId = button.getAttribute('data-faq');
-        const content = document.getElementById('faq-' + faqId);
-        const icon = button.querySelector('i');
-        
-        // Close all
-        document.querySelectorAll('.faq-content').forEach(c => {
-          if (c.id !== 'faq-' + faqId) {
-            c.style.maxHeight = '0';
-            c.style.paddingBottom = '0';
-          }
-        });
-        document.querySelectorAll('.faq-toggle i').forEach(i => {
-          if (i !== icon) {
-            i.style.transform = 'rotate(0deg)';
-          }
-        });
-        
-        // Toggle current
-        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
-          content.style.maxHeight = '0';
-          content.style.paddingBottom = '0';
-          icon.style.transform = 'rotate(0deg)';
-        } else {
-          content.style.maxHeight = content.scrollHeight + 'px';
-          content.style.paddingBottom = '1.5rem';
-          icon.style.transform = 'rotate(180deg)';
-        }
+  }
+
+  function botReply(accent) {
+    replyArea.innerHTML = `
+      <div class="dc-message dc-reply">
+        <img class="dc-avatar" src="https://i.imgur.com/b8gUPxp.png" alt="bot">
+        <div class="dc-body">
+          <div class="dc-author">
+            <span class="dc-name">Discash</span>
+            <span class="dc-tag">✓ BOT</span>
+            <span class="dc-time">今日 21:0${Math.floor(Math.random()*9)}</span>
+          </div>
+          <div class="dc-embed" style="${accent ? 'border-left-color:'+accent+';' : ''}">
+            <div id="botLog"></div>
+          </div>
+        </div>
+      </div>`;
+    const chat = document.getElementById("dcChat");
+    if (chat) chat.scrollTop = chat.scrollHeight;
+  }
+
+  function logLine(html) {
+    const log = document.getElementById("botLog");
+    if (!log) return;
+    const div = document.createElement("div");
+    div.className = "dc-log-line";
+    div.innerHTML = html;
+    log.appendChild(div);
+    const chat = document.getElementById("dcChat");
+    if (chat) chat.scrollTop = chat.scrollHeight;
+  }
+
+  function dropMoney() {
+    const win = document.querySelector(".dc-app");
+    if (!win) return;
+    const rect = win.getBoundingClientRect();
+    const types = ["bundle","bundle","coin","coin","emoji"];
+    for (let i = 0; i < 18; i++) {
+      const t = types[Math.floor(Math.random()*types.length)];
+      const c = document.createElement("div");
+      if (t === "emoji") {
+        c.innerHTML = ["🎉","✨","💖","🎀"][Math.floor(Math.random()*4)];
+        c.style.fontSize = (1.4 + Math.random()*1.2) + "rem";
+      } else if (t === "bundle") {
+        const w = 40 + Math.random()*30;
+        c.innerHTML = `<svg viewBox="0 0 180 110" style="width:${w}px;height:${w*110/180}px;"><use href="#bundle"/></svg>`;
+      } else {
+        const w = 28 + Math.random()*20;
+        c.innerHTML = `<svg viewBox="0 0 60 60" style="width:${w}px;height:${w}px;"><use href="#coin"/></svg>`;
+      }
+      c.style.position = "fixed";
+      c.style.left = (rect.left + Math.random()*rect.width) + "px";
+      c.style.top = (rect.top + 40) + "px";
+      c.style.zIndex = 999;
+      c.style.pointerEvents = "none";
+      c.style.filter = "drop-shadow(0 8px 14px rgba(0,0,0,0.3))";
+      c.style.transition = "transform 1.6s cubic-bezier(0.4, 0, 0.6, 1), opacity 1.6s";
+      document.body.appendChild(c);
+      requestAnimationFrame(() => {
+        c.style.transform = `translate(${(Math.random()-0.5)*260}px, ${260+Math.random()*240}px) rotate(${Math.random()*900-450}deg)`;
+        c.style.opacity = "0";
       });
-    });
-    
-    // Smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+      setTimeout(() => c.remove(), 1700);
+    }
+  }
+
+  function openPayPay(p) {
+    ppAmount.textContent = p.price.toLocaleString();
+    ppItem.textContent = p.name;
+    ppLink.value = `https://pay.paypay.ne.jp/${randCode(12)}neko`;
+    ppModal.classList.add("show");
+  }
+  function closePayPay() { ppModal.classList.remove("show"); }
+  ppClose.addEventListener("click", closePayPay);
+  ppModal.addEventListener("click", (e) => { if (e.target === ppModal) closePayPay(); });
+
+  function setTyping(t) {
+    typingText.textContent = t;
+    typingText.style.color = "#dbdee1";
+    setTimeout(()=>{ typingText.textContent = "#自販機 にメッセージを送信"; typingText.style.color = ""; }, 1800);
+  }
+
+  function showSplash() {
+    successSplash.classList.add("show");
+    setTimeout(()=>successSplash.classList.remove("show"), 3000);
+  }
+
+  function confettiHearts() {
+    const items = ["💖","🎀","✨","🐱","💕","🌸"];
+    for (let i = 0; i < 30; i++) {
+      const c = document.createElement("span");
+      c.textContent = items[Math.floor(Math.random()*items.length)];
+      c.style.cssText = `position:fixed; left:${Math.random()*100}vw; top:-30px;
+        font-size:${1+Math.random()*1.4}rem; z-index:998; pointer-events:none;
+        transition: transform 2.5s linear, opacity 2.5s;`;
+      document.body.appendChild(c);
+      requestAnimationFrame(()=>{
+        c.style.transform = `translateY(${window.innerHeight+60}px) rotate(${Math.random()*720-360}deg)`;
+        c.style.opacity = "0";
       });
-    });
-    
-    // Intersection Observer for animations
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
+      setTimeout(()=>c.remove(), 2600);
+    }
+  }
+
+  function deliverToDM(p, code, link) {
+    if (dmEmpty) dmEmpty.style.display = "none";
+    dmCount++;
+    dmBadge.textContent = `${dmCount} 件`;
+
+    const now = new Date();
+    const time = `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+
+    const msg = document.createElement("div");
+    msg.className = "dm-msg";
+    msg.innerHTML = `
+      <span class="dm-new-badge">NEW</span>
+      <img src="https://i.imgur.com/b8gUPxp.png" alt="bot">
+      <div class="dm-msg-body">
+        <div class="dm-msg-author">
+          <span class="dm-msg-name">Discash</span>
+          <span class="dm-msg-tag">✓ BOT</span>
+          <span class="dm-msg-time">今日 ${time}</span>
+        </div>
+        <div class="dm-msg-content">
+          お買い上げありがとにゃ🐱💕<br>
+          ご注文の <b>${p.emoji} ${p.name}</b> をお届けします🎁
+        </div>
+        <div class="dm-msg-embed">
+          <div class="dm-msg-embed-title">📦 ご注文内容</div>
+          <div class="dm-msg-embed-field"><span class="k">商品</span><span>${p.emoji} ${p.name}</span></div>
+          <div class="dm-msg-embed-field"><span class="k">金額</span><span>¥${p.price.toLocaleString()}</span></div>
+          <div class="dm-msg-embed-field"><span class="k">受取リンク</span><span style="word-break:break-all;font-size:0.78rem;">${link}</span></div>
+          <div class="dm-msg-embed-field"><span class="k">シリアル</span><span class="dm-code">${code}</span></div>
+          <div style="margin-top:8px;">
+            <a href="#" class="dm-msg-link" onclick="event.preventDefault();">🎫 商品を受け取る</a>
+          </div>
+        </div>
+      </div>
+    `;
+    dmBody.appendChild(msg);
+
+    setTimeout(()=>{
+      const badge = msg.querySelector(".dm-new-badge");
+      if (badge) badge.style.display = "none";
+    }, 5000);
+
+    msg.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  buyBtn.addEventListener("click", () => {
+    if (selectedIndex === null) {
+      botReply("#f0b232");
+      logLine(`⚠️ まずは買いたい商品をえらんでにゃ🐱`);
+      return;
+    }
+    const p = productData[selectedIndex];
+    setTyping(`/buy ${p.name}`);
+    openPayPay(p);
+  });
+
+  ppPay.addEventListener("click", () => {
+    if (selectedIndex === null) { closePayPay(); return; }
+    const link = ppLink.value.trim();
+    if (!link) {
+      ppLink.style.borderColor = "#ff0033";
+      ppLink.focus();
+      return;
+    }
+    const p = productData[selectedIndex];
+    ppPay.disabled = true;
+    ppPay.textContent = "⏳ 検証中...";
+    setTimeout(() => {
+      closePayPay();
+      ppPay.disabled = false;
+      ppPay.textContent = "💳 受取リンクを送信する";
+      runPurchase(p, link);
+    }, 1200);
+  });
+
+  function runPurchase(p, link) {
+    buyBtn.disabled = true;
+    botReply("#5865f2");
+
+    const code = p.deliver();
+
+    const steps = [
+      `🛒 <b>${p.name}</b>（¥${p.price}）の注文を受付しました`,
+      `📎 受取リンクを検証しています...<br><span style="color:#a5d8ff;word-break:break-all;font-size:0.78rem;">${link}</span>`,
+      `⏳ PayPay側で残高を確認中...`,
+      `✅ <b>¥${p.price}</b> の受取を確認しました！ありがとにゃ🐱`,
+      `📦 在庫を更新（${p.stock} → ${p.stock - 1}）`,
+      `📨 商品を自動でDM送付しました 🎉`,
+    ];
+    let t = 0;
+    steps.forEach((s, idx) => {
+      setTimeout(() => {
+        logLine(s);
+        if (idx === 3) { dropMoney(); confettiHearts(); }
+        if (idx === steps.length - 1) {
+          p.stock -= 1;
+          selectedIndex = null;
+          renderProducts();
+          const embed = replyArea.querySelector(".dc-embed");
+          if (embed) embed.style.borderLeftColor = "#23a55a";
+          logLine(`🎉 <b>${p.name}</b> のお届け完了！またのご利用をお待ちにゃ🐾`);
+          dropMoney();
+          deliverToDM(p, code, link);
+          showSplash();
+          buyBtn.disabled = false;
         }
-      });
-    }, { threshold: 0.1 });
-    
-    document.querySelectorAll('.feature-card, .pricing-card').forEach(el => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(20px)';
-      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-      observer.observe(el);
+      }, (t += 750));
     });
-  </script>
-  <!-- Scripts -->
-  <script src="js/main.js"></script>
+  }
+
+  resetBtn.addEventListener("click", () => {
+    productData = JSON.parse(JSON.stringify(initialProducts)).map((p,i)=>{ p.deliver = initialProducts[i].deliver; return p; });
+    selectedIndex = null;
+    replyArea.innerHTML = "";
+    dmBody.innerHTML = '<div class="dm-empty" id="dmEmpty"><span class="dm-cat">🐱💭</span>まだDMは届いてないにゃ。<br>商品を購入するとここに届くよ💖</div>';
+    dmCount = 0;
+    dmBadge.textContent = "0 件";
+    renderProducts();
+  });
+
+  renderProducts();
+
+  document.querySelectorAll(".faq-item").forEach(item => {
+    item.querySelector(".faq-q").addEventListener("click", () => {
+      item.classList.toggle("open");
+    });
+  });
+</script>
 </body>
 </html>
